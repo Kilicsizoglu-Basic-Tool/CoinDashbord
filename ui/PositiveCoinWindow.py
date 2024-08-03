@@ -14,7 +14,7 @@ class PositiveCoinWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.taapikey = secret='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbHVlIjoiNjUwODExYTc0OThkNzVkYTM2YmNkZDIxIiwiaWF0IjoxNzIyMzc0MTQxLCJleHAiOjMzMjI2ODM4MTQxfQ.wreJRC9-Do8N72lULFPtJXe_fuztoGXJt-5hJw00SCY'
+        self.taapikey = secret=''
         self.exchange = 'binance'
         self.interval = ''
 
