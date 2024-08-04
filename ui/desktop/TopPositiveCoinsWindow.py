@@ -31,7 +31,6 @@ class TopPositiveCoinWindow(QWidget):
         self.setLayout(self.layout)
 
         self.binance = binanceConnect.BinanceConnect()
-        self.twilio = twilioConnect.twilioConnect()
         self.timer = QTimer()
 
     def fetch(self):
