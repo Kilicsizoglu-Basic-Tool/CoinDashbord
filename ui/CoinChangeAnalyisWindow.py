@@ -26,7 +26,7 @@ class CoinChangeAnalyisWindow(QWidget):
         self.time_interval_combo.addItems([
             '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'
         ])
-        self.time_interval_combo.setCurrentText('15m')  # Default selection to 1 day
+        self.time_interval_combo.setCurrentText('1h')  # Default selection to 1 day
 
         # Fetch button
         self.fetch_button = QPushButton("Fetch and Display", self)
@@ -43,7 +43,7 @@ class CoinChangeAnalyisWindow(QWidget):
         layout.addWidget(self.canvas)
 
         self.setLayout(layout)
-        
+
         self.timer = QTimer()
 
     def fetch_and_display_negative_coins(self):
@@ -56,9 +56,9 @@ class CoinChangeAnalyisWindow(QWidget):
                 # Get all symbols and set the desired interval
                 symbols = bc.get_all_symbols()
                 interval = self.time_interval_combo.currentText()
-                
-                i = 5 * 60 * 1000
-                    
+
+                i = 15 * 60 * 1000
+
                 self.timer.setInterval(i)
                 self.timer.timeout.connect(self.fetch_and_display_negative_coins)
                 self.timer.start()

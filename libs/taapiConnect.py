@@ -1,9 +1,13 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import datetime
 import requests
+import threading
+import time
 
-class taapiConnect:
-    def get_stochrsi_values(secret, exchange, symbol, interval):
+class TaapiConnect:
+    def get_stochrsi_values(self, secret, exchange, symbol, interval):
+        """Fetch StochRSI values for a given symbol and interval."""
+        k_value = 0.0
+        d_value = 0.0
         url = f"https://api.taapi.io/stochrsi?secret={secret}&exchange={exchange}&symbol={symbol}&interval={interval}"
         response = requests.get(url)
         
@@ -11,14 +15,19 @@ class taapiConnect:
             data = response.json()
             k_value = float(data['valueFastK'])
             d_value = float(data['valueFastD'])
-            return k_value, d_value
         else:
-            raise Exception(f"API request failed with status code: {response.status_code}")
+            time.sleep(5)
+            k_value, d_value = self.get_stochrsi_values(secret, exchange, symbol, interval)
+        
+        return symbol, k_value, d_value
 
-    def convert_symbol(symbol):
+    def convert_symbol(self, symbol):
+        """Convert symbol format from 'USDT' to '/USDT'."""
         return symbol.replace("USDT", "/USDT")
         
-    def get_rsi_values(secret, exchange, symbol, interval):
+    def get_rsi_values(self, secret, exchange, symbol, interval):
+        """Fetch RSI values for a given symbol and interval."""
+        rsi_value = 0.0
         url = f"https://api.taapi.io/rsi?secret={secret}&exchange={exchange}&symbol={symbol}&interval={interval}"
         response = requests.get(url)
         
@@ -26,42 +35,59 @@ class taapiConnect:
             data = response.json()
             # Convert the value to float
             rsi_value = float(data['value'])
-            return rsi_value
         else:
-            raise Exception(f"API request failed with status code: {response.status_code}")
+            time.sleep(5)
+            rsi_value = self.get_rsi_values(secret, exchange, symbol, interval)
         
-    def fetch(self, symbols, fetch_type="rsi", repeats=5, delay=15):
+        return symbol, rsi_value
+
+        
+    def fetch(self, symbols, secret, exchange, interval, fetch_type="rsi", repeats=5, delay=15):
         """
-        Verileri belirtilen semboller için belirli bir sayıda ve süre boyunca çeker.
-        
-        :param symbols: İşlem yapılacak sembollerin listesi.
-        :param fetch_type: Çekilecek veri tipi ('rsi' veya 'stochrsi').
-        :param repeats: Tekrar sayısı.
-        :param delay: Her tekrar arasındaki bekleme süresi (saniye cinsinden).
+        Fetch data for specified symbols a given number of times and delays.
+
+        :param symbols: List of symbols to process.
+        :param secret: API secret key.
+        :param exchange: Exchange name.
+        :param interval: Data interval.
+        :param fetch_type: Type of data to fetch ('rsi' or 'stochrsi').
+        :param repeats: Number of repetitions.
+        :param delay: Delay between repetitions (in seconds).
         """
         results = []
+        
         for i in range(repeats):
             print(f"Fetching data, iteration {i+1}/{repeats}...")
-            with ThreadPoolExecutor(max_workers=len(symbols)) as executor:
-                futures = []
-                for symbol in symbols:
+            threads = []
+            thread_results = [None] * len(symbols)
+
+            def fetch_symbol_data(index, symbol):
+                """Thread function to fetch data for a single symbol."""
+                try:
                     if fetch_type == "rsi":
-                        futures.append(executor.submit(self.get_rsi_values, symbol))
+                        result = self.get_rsi_values(secret, exchange, symbol, interval)
                     elif fetch_type == "stochrsi":
-                        futures.append(executor.submit(self.get_stochrsi_values, symbol))
+                        result = self.get_stochrsi_values(secret, exchange, symbol, interval)
                     else:
                         raise ValueError("Invalid fetch type. Use 'rsi' or 'stochrsi'.")
+                    thread_results[index] = result
+                    print(f"Result for {symbol}: {result}")
+                except Exception as e:
+                    print(f"An error occurred for {symbol}: {e}")
 
-                for future in as_completed(futures):
-                    try:
-                        result = future.result()
-                        results.append(result)
-                        print(f"Result: {result}")
-                    except Exception as e:
-                        print(f"An error occurred: {e}")
+            for index, symbol in enumerate(symbols):
+                thread = threading.Thread(target=fetch_symbol_data, args=(index, symbol))
+                threads.append(thread)
+                thread.start()
 
-            # Bekleme süresi
+            # Wait for all threads to complete
+            for thread in threads:
+                thread.join()
+
+            results.extend(filter(None, thread_results))
+
+            # Wait between iterations
             if i < repeats - 1:
-                datetime.time.sleep(delay)
+                time.sleep(delay)
         
         return results

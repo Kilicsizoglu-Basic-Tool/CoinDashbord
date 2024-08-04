@@ -26,7 +26,7 @@ class CoinStatusWindow(QWidget):
         self.time_interval_combo.addItems([
             '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'
         ])
-        self.time_interval_combo.setCurrentText('15m')  # Default selection to 4 hours
+        self.time_interval_combo.setCurrentText('1h')  # Default selection to 4 hours
 
         # Fetch and plot button
         self.fetch_button = QPushButton("Fetch and Plot", self)
@@ -56,7 +56,7 @@ class CoinStatusWindow(QWidget):
         interval = self.time_interval_combo.currentText()
         print(f"Selected time interval: {interval}")
         
-        i = 5 * 60 * 1000
+        i = 15 * 60 * 1000
             
         self.timer.setInterval(i)
         self.timer.timeout.connect(self.fetch_and_plot_data)

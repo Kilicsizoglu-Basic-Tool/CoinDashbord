@@ -1,5 +1,6 @@
 PyQt6
 matplotlib
 pandas
-numpy 
+numpy
 python-binance
+twilio

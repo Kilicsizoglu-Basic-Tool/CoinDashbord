@@ -1,5 +1,6 @@
 import time
 import sys
+from tokenize import String
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QListWidget
 from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -8,6 +9,8 @@ import pandas as pd
 import libs.binanceConnect  # Custom module for Binance API connection
 import libs.binanceConnectionLock  # Ensure this module is correctly implemented for Binance API
 import libs.taapiConnect  # Custom module for TAAPI API connection
+import libs.taapiConnectionLock
+import libs.twilioConnect  # Custom module for Twilio API connection
 
 
 class PositiveCoinWindow(QWidget):
@@ -21,7 +24,7 @@ class PositiveCoinWindow(QWidget):
         # Set up window properties
         self.setWindowTitle("Positive Coin")
         self.setGeometry(150, 150, 800, 600)  # Adjusted size for pie chart
-
+        self.binance = libs.binanceConnect.BinanceConnect()
         # Create layout and widgets
         layout = QVBoxLayout(self)
 
@@ -33,7 +36,7 @@ class PositiveCoinWindow(QWidget):
         self.time_interval_combo.addItems([
             '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'
         ])
-        self.time_interval_combo.setCurrentText('15m')  # Default selection to 4 hours
+        self.time_interval_combo.setCurrentText('1h')  # Default selection to 4 hours
 
         # Fetch and display button
         self.fetch_button = QPushButton("Fetch and Display", self)
@@ -59,24 +62,24 @@ class PositiveCoinWindow(QWidget):
         self.timer = QTimer()
 
     def fetch_and_display_positive_coins(self):
-        positive_coins = {}
+        positive_coins = None
         lock = libs.binanceConnectionLock.BinanceFileLock()
         try:
-            with lock:
+            if not lock.is_locked():
+                lock.acquire()
                 # Initialize BinanceConnect class
-                bc = libs.binanceConnect.BinanceConnect()
-                symbols = bc.get_all_symbols()
+                symbols = self.binance.get_all_symbols()
                 interval = self.time_interval_combo.currentText()
                 print(f"Fetching {len(symbols)} symbols with interval: {interval}")
                 
-                i = 5 * 60 * 1000
+                i = 15 * 60 * 1000
                 
                 self.timer.setInterval(i)
                 self.timer.timeout.connect(self.fetch_and_display_positive_coins)
                 self.timer.start()
 
                 # Fetch kline data for each symbol
-                kline_data = bc.fetch_klines_for_symbols(symbols, interval)
+                kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
 
                 # Calculate positive changes
                 positive_coins = self.calculate_positive_changes(kline_data)
@@ -84,11 +87,13 @@ class PositiveCoinWindow(QWidget):
                 # Display the results in a pie chart
                 self.plot_positive_changes_pie_chart(positive_coins)
 
-            # Fetch and display RSI/StochRSI for potential coins
-            self.fetch_and_display_potential_coins(positive_coins)
-        
+                # Fetch and display RSI/StochRSI for potential coins
+                self.fetch_and_display_potential_coins(positive_coins)
+                    
         except Exception as e:
             print(f"Failed to acquire lock: {e}")
+
+        lock.release()
 
     def calculate_positive_changes(self, data):
         """Calculate average percentage changes for each coin and find positive ones."""
@@ -125,43 +130,28 @@ class PositiveCoinWindow(QWidget):
 
     def fetch_and_display_potential_coins(self, positive_coins):
         """Fetch RSI and StochRSI for coins with potential continuous growth."""
-        
-        coins = top_5_positive_coins = dict(sorted(positive_coins.items(), key=lambda item: item[1], reverse=True)[:5])
-        
-        potential_coins = []
+        # Sort potential coins by RSI value (descending order)
+        positive_coins.sort(key=lambda x: x[1], reverse=True)
 
-        lock = libs.taapiConnectionLock.TAAPIFileLock()
-        with lock:
-            for symbol in coins:
-                try:
-                    # Convert symbol format for TAAPI
-                    taapi_symbol = libs.taapiConnect.taapiConnect.convert_symbol(symbol)
-                    
-                    print(f"Fetching RSI and StochRSI for {symbol} ({taapi_symbol})")
-                    
-                    self.interval = self.time_interval_combo.currentText()
-                    
-                    # Get RSI and StochRSI values
-                    rsi_value = libs.taapiConnect.taapiConnect.get_rsi_values(self.taapikey, self.exchange, symbol, self.interval)
-                    print(f"RSI value: {rsi_value}")
-                    time.sleep(5)
-                    k_value, d_value = libs.taapiConnect.taapiConnect.get_stochrsi_values(self.taapikey, self.exchange, symbol, self.interval)
-                    print(f"StochRSI K value: {k_value}, D value: {d_value}")
-                    time.sleep(5)
+        twilio = libs.twilioConnect.twilioConnect()
 
-                    print(f"{symbol}: RSI={rsi_value}, StochRSI K={k_value}, D={d_value}")
-
-                    # Check if RSI and StochRSI indicate a potential continuous growth
-                    if rsi_value < 50 and k_value < 50 and d_value < 50:
-                        potential_coins.append((symbol, rsi_value, k_value, d_value))
-
-                except Exception as e:
-                    print(f"Error fetching RSI/StochRSI for {symbol}: {str(e)}")
-
-            # Sort potential coins by RSI value (descending order)
-            potential_coins.sort(key=lambda x: x[1], reverse=True)
-
-            # Update list widget with potential coins
-            self.coin_list_widget.clear()
-            for coin, rsi, k, d in potential_coins:
-                self.coin_list_widget.addItem(f"{coin}: RSI={rsi:.2f}, StochRSI K={k:.2f}, D={d:.2f}")
+        # Send SMS with potential coins
+        message = "Positive Coins with potential recovery:\n"
+            
+        i = 0
+        binance = libs.binanceConnect.BinanceConnect()
+        list_coin = binance.get_24hr_ticker()
+        # Update list widget with potential coins
+        self.coin_list_widget.clear()
+        for coin, rsi, k, d in potential_coins:
+            i += 1
+            temp_change = 0
+            for c in list_coin:
+                if c["symbol"] == coin:
+                    temp_change = float(c["priceChangePercent"])
+            message += f"{coin}: 24h:{temp_change}\n"
+            self.coin_list_widget.addItem(f"{coin}: 24h:{temp_change}")
+            
+        if i != 0:   
+            # Send SMS with potential coins
+            twilio.sendSMS(message)

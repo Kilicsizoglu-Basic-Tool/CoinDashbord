@@ -2,8 +2,8 @@ import os
 import time
 
 class TAAPIFileLock:
-    def __init__(self, lock_file_path=".coindashbord_config/.taapi_connection_lock"):
-        self.lock_file_path = lock_file_path
+    def __init__(self):
+        self.lock_file_path = ".coindashbord_config/.taapi_connection_lock"
 
     def acquire(self, timeout=None, wait_interval=1):
         """

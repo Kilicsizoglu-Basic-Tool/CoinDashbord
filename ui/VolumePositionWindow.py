@@ -26,7 +26,7 @@ class VolumePositionWindow(QWidget):
         self.time_interval_combo.addItems([
             '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M'
         ])
-        self.time_interval_combo.setCurrentText('15m')  # Default selection to 1 day
+        self.time_interval_combo.setCurrentText('1h')  # Default selection to 1 day
 
         # Fetch and display button
         self.fetch_button = QPushButton("Fetch and Display", self)
@@ -58,7 +58,8 @@ class VolumePositionWindow(QWidget):
                 interval = self.time_interval_combo.currentText()
                 
                 # Set timer interval to 5 minutes (5 * 60 * 1000 milliseconds)
-                self.timer.setInterval(5 * 60 * 1000)
+                i = 15 * 60 * 1000
+                self.timer.setInterval(i)
                 self.timer.timeout.connect(self.fetch_and_display_volume_data)
                 self.timer.start()
 
@@ -136,10 +137,4 @@ class VolumePositionWindow(QWidget):
         # Adjust layout and update the canvas
         self.figure.tight_layout()
         self.canvas.draw()
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = VolumePositionWindow()
-    window.show()
-    sys.exit(app.exec())
 
