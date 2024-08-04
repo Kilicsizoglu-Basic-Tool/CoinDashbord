@@ -4,7 +4,6 @@
 version="5.5-5"
 pkgname="crypto-dashboard"
 mkdir "deb_build"
-mkdir "${pkgname}_deb_${version}"
 build_dir="./deb_build/${pkgname}_deb_${version}"
 
 # Mevcut yapı dizinini temizleyin
