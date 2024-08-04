@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import QTimer, Qt
 from libs.binanceConnect import BinanceConnect
-from libs.twilioConnect import twilioConnect
+#from libs.twilioConnect import twilioConnect
 
 
 class PriceAlertWindow(QWidget):
@@ -36,7 +36,7 @@ class PriceAlertWindow(QWidget):
 
         # Initialize the BinanceConnect and get all symbols
         self.binance = BinanceConnect()
-        self.twilio = twilioConnect()
+        #self.twilio = twilioConnect()
         self.symbols = self.binance.get_all_symbols()
 
         # Set up auto-complete with QCompleter
@@ -113,7 +113,7 @@ class PriceAlertWindow(QWidget):
                 if (condition == 'greater' and current_price > target_price) or \
                    (condition == 'less' and current_price < target_price):
                     alert_message = f"Alert Triggered for {coin}: Current price is {current_price}, target was {target_price}."
-                    self.twilio.sendSMS(alert_message)
+                    #self.twilio.sendSMS(alert_message)
                     self.alert_list_widget.addItem(f"Triggered: {alert_message}")
 
                     # Remove triggered alert
