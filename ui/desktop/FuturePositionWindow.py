@@ -15,6 +15,9 @@ class FuturePositionWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.selected_symbol = ""
+        self.selected_interval = ""
+
         # BinanceConnect instance
         self.bc = BinanceConnect()
 
@@ -159,9 +162,19 @@ class FuturePositionWindow(QMainWindow):
     def load_chart(self):
         """Load and display the chart based on the selected symbol and interval."""
         try:
+            symbols = self.bc.get_all_symbols()
+            for symbol in symbols:
+                if symbol == self.symbol_input.text():
+                    self.selected_symbol = symbol
+
+            intervals = ["1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w"]
+            for interval in intervals:
+                if interval == self.interval_input.text():
+                    self.selected_interval = interval
+
             # Get symbol and interval from the user
-            symbol = self.symbol_input.text()
-            interval = self.interval_input.text()
+            symbol = self.selected_symbol
+            interval = self.selected_interval
 
             # Fetch kline data using BinanceConnect
             klines = self.bc.fetch_klines_for_symbols([symbol], interval)
@@ -181,7 +194,14 @@ class FuturePositionWindow(QMainWindow):
     def update_price(self):
         """Update the current price for the symbol."""
         try:
-            symbol = self.symbol_input.text()
+            symbols = self.bc.get_all_symbols()
+            for symbol in symbols:
+                if symbol == self.symbol_input.text():
+                    self.selected_symbol = symbol
+
+            # Get symbol and interval from the user
+            symbol = self.selected_symbol
+
             self.current_price = self.bc.get_price(symbol)
             if self.current_price is None:
                 QMessageBox.warning(self, "Error", "Failed to fetch current price.")
