@@ -1,0 +1,83 @@
+#!/bin/sh
+
+version="v3"
+package_name="coindashboard"
+
+# Daha önceki yapı dizinlerini temizleyin
+rm -rf ~/rpmbuild/BUILD/${package_name}-${version}
+rm -rf ~/rpmbuild/RPMS/noarch/${package_name}-${version}-1.noarch.rpm
+
+# Kaynak dizinini ve RPM yapı dizinini oluşturun
+mkdir -p ~/rpmbuild/SOURCES
+mkdir -p ~/rpmbuild/BUILD/${package_name}-${version}/usr/bin
+mkdir -p ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}
+mkdir -p ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/applications
+
+# Gerekli dosyaları kopyalayın
+cp -r ./libs ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/libs
+cp -r ./ui ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/ui
+cp ./coindashboard ~/rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard
+cp ./coindashboard_lock_app ~/rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard_lock_app
+cp ./icon.png ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/icon.png
+cp ./icon.ico ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/icon.ico
+cp ./app.py ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/app.py
+cp ./lock_app.py ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/lock_app.py
+cp ./coindashboard.desktop ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard.desktop
+cp ./coindashboard_lock_app.desktop ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard_lock_app.desktop
+cp ./requirements.txt ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/requirements.txt
+
+# SPEC dosyasını oluşturun
+cat > ~/rpmbuild/SPECS/${package_name}.spec <<EOL
+Name:           ${package_name}
+Version:        ${version}
+Release:        1%{?dist}
+Summary:        Crypto Dashboard Application
+
+License:        GPL
+URL:            http://your-url.com/
+Source0:        ${package_name}-${version}.tar.gz
+BuildArch:      noarch
+
+BuildRequires:  python3, python3-virtualenv
+Requires:       python3
+
+%description
+A comprehensive dashboard for monitoring cryptocurrency markets.
+Provides real-time insights and analysis on crypto trends, helping users to make informed trading decisions.
+
+%prep
+%setup -q
+
+%build
+
+%install
+# Kurulum dizinini oluştur
+mkdir -p %{buildroot}/usr/bin
+mkdir -p %{buildroot}/usr/share/${package_name}
+mkdir -p %{buildroot}/usr/share/applications
+
+# Dosyaları kopyalayın
+cp -a * %{buildroot}/usr/share/${package_name}
+cp -a usr/bin/* %{buildroot}/usr/bin/
+cp -a usr/share/applications/* %{buildroot}/usr/share/applications/
+
+%files
+/usr/bin/coindashboard
+/usr/bin/coindashboard_lock_app
+/usr/share/${package_name}
+/usr/share/applications/coindashboard.desktop
+/usr/share/applications/coindashboard_lock_app.desktop
+
+%changelog
+* Sun Aug 04 2024 Fatih Yolcu <kilicsizoglu@gmail.com> - ${version}-1
+- Initial release
+EOL
+
+# Kaynak dosyalarını arşivleyin
+tar -czf ~/rpmbuild/SOURCES/${package_name}-${version}.tar.gz -C ~/rpmbuild/BUILD/ ${package_name}-${version}
+
+# RPM paketini oluşturun
+rpmbuild -ba ~/rpmbuild/SPECS/${package_name}.spec
+
+# Oluşturulan RPM paketini kontrol edin
+echo "RPM paketi oluşturuldu: ~/rpmbuild/RPMS/noarch/${package_name}-${version}-1.noarch.rpm"

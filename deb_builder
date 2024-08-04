@@ -1,38 +1,123 @@
-#!/bin/sh
+#!/bin/bash
 
-version="v3"
+# Paket bilgileri
+version="1.0-1"
+pkgname="crypto-dashboard"
+build_dir="../${pkgname}_deb_${version}"
 
-rm -rf ../coindashboard${version}
+# Mevcut yapı dizinini temizleyin
+echo "Önceki yapı dizinleri temizleniyor..."
+rm -rf $build_dir
 
-# This script is used to build a debian package from a source package
-# It is used by the deb_builder container
-mkdir ../coindashboard${version}
-mkdir ../coindashboard${version}/DEBIAN
-mkdir ../coindashboard${version}/usr
-mkdir ../coindashboard${version}/usr/bin
-mkdir ../coindashboard${version}/usr/share
-mkdir ../coindashboard${version}/usr/share/coindashboard
-mkdir ../coindashboard${version}/usr/share/applications
+# Dizin yapısını oluşturun
+echo "Dizin yapısı oluşturuluyor..."
+mkdir -p ${build_dir}/DEBIAN
+mkdir -p ${build_dir}/usr/bin
+mkdir -p ${build_dir}/usr/share/${pkgname}
+mkdir -p ${build_dir}/usr/share/applications
 
-cp -r ./libs ../coindashboard${version}/usr/share/coindashboard/libs
-cp -r ./ui ../coindashboard${version}/usr/share/coindashboard/ui
-cp ./coindashboard ../coindashboard${version}/usr/bin/coindashboard
-cp ./coindashboard_lock_app ../coindashboard${version}/usr/bin/coindashboard_lock_app
-cp ./icon.png ../coindashboard${version}/usr/share/coindashboard/icon.png
-cp ./icon.ico ../coindashboard${version}/usr/share/coindashboard/icon.ico
-cp ./app.py ../coindashboard${version}/usr/share/coindashboard/app.py
-cp ./lock_app.py ../coindashboard${version}/usr/share/coindashboard/lock_app.py
-cp ./DEBIAN/control ../coindashboard${version}/DEBIAN/control
-cp ./DEBIAN/prerm ../coindashboard${version}/DEBIAN/prerm
-cp ./DEBIAN/postinst ../coindashboard${version}/DEBIAN/postinst
-cp ./DEBIAN/coindashboard.desktop ../coindashboard${version}/usr/share/applications/coindashboard.desktop
-cp ./DEBIAN/coindashboard_lock_app.desktop ../coindashboard${version}/usr/share/applications/coindashboard_lock_app.desktop
-cp ./requirements.txt ../coindashboard${version}/usr/share/coindashboard/requirements.txt
+# Gerekli dosyaları kopyalayın
+echo "Dosyalar kopyalanıyor..."
+cp -r ./libs ${build_dir}/usr/share/${pkgname}/libs
+cp -r ./ui ${build_dir}/usr/share/${pkgname}/ui
+cp ./coindashboard ${build_dir}/usr/bin/${pkgname}
+cp ./coindashboard_lock_app ${build_dir}/usr/bin/${pkgname}_lock_app
+cp ./icon.png ${build_dir}/usr/share/${pkgname}/icon.png
+cp ./icon.ico ${build_dir}/usr/share/${pkgname}/icon.ico
+cp ./app.py ${build_dir}/usr/share/${pkgname}/app.py
+cp ./lock_app.py ${build_dir}/usr/share/${pkgname}/lock_app.py
+cp ./requirements.txt ${build_dir}/usr/share/${pkgname}/requirements.txt
+cp ./coindashboard.desktop ${build_dir}/usr/share/applications/${pkgname}.desktop
+cp ./coindashboard_lock_app.desktop ${build_dir}/usr/share/applications/${pkgname}_lock_app.desktop
 
-cd ../coindashboard${version}
+# DEBIAN dizinindeki dosyaları kopyalayın
+cp ./DEBIAN/control ${build_dir}/DEBIAN/control
+cp ./DEBIAN/prerm ${build_dir}/DEBIAN/prerm
+cp ./DEBIAN/postinst ${build_dir}/DEBIAN/postinst
 
-dpkg-deb --build ../coindashboard${version}
+# Paket bilgileri (control) dosyasını oluşturun
+cat > ${build_dir}/DEBIAN/control <<EOL
+Package: ${pkgname}
+Version: ${version}
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Fatih Yolcu <kilicsizoglu@gmail.com>
+Depends: python3, python3-venv
+Description: Crypto Dashboard Application
+ A comprehensive dashboard for monitoring cryptocurrency markets.
+ Provides real-time insights and analysis on crypto trends, helping users to make informed trading decisions.
+EOL
 
-cd ..
+# postinst dosyasını oluşturun
+cat > ${build_dir}/DEBIAN/postinst <<EOL
+#!/bin/bash
+set -e
 
-sudo dpkg -i coindashboard${version}.deb
+# Betiğin çalıştığı dizinin yolunu al
+DIR="\$(cd "\$(dirname "\$0")" && pwd)"
+
+# Sanal ortam dizini
+VENV_DIR="/usr/share/${pkgname}/${pkgname}-venv"
+
+# Bağımlılıkları kontrol et ve yükle
+if ! dpkg -l | grep -q python3-venv; then
+    echo "python3-venv paketi yükleniyor..."
+    apt-get update
+    apt-get install -y python3-venv
+fi
+
+# Sanal ortam mevcut değilse oluştur
+if [ ! -d "\$VENV_DIR" ]; then
+    echo "Sanal ortam oluşturuluyor..."
+    python3 -m venv "\$VENV_DIR"
+    echo "Sanal ortam oluşturuldu."
+fi
+
+# Sanal ortamı etkinleştir
+source "\$VENV_DIR/bin/activate"
+
+# Gerekli bağımlılıkları yükle
+echo "Bağımlılıklar yükleniyor..."
+pip install -r "/usr/share/${pkgname}/requirements.txt"
+
+echo "${pkgname} kurulum bağımlılıkları yüklendi."
+EOL
+
+# prerm dosyasını oluşturun (paket kaldırılırken yapılacak işlemler)
+cat > ${build_dir}/DEBIAN/prerm <<EOL
+#!/bin/bash
+set -e
+
+echo "${pkgname} kaldırılıyor..."
+
+# Sanal ortamı kaldır
+VENV_DIR="/usr/share/${pkgname}/${pkgname}-venv"
+if [ -d "\$VENV_DIR" ]; then
+    echo "Sanal ortam kaldırılıyor..."
+    rm -rf "\$VENV_DIR"
+fi
+
+# /usr/share/${pkgname} dizinini temizle
+SHARE_DIR="/usr/share/${pkgname}"
+if [ -d "\$SHARE_DIR" ]; then
+    echo "\$SHARE_DIR dizini temizleniyor..."
+    rm -rf "\$SHARE_DIR"/*
+    rmdir "\$SHARE_DIR"
+fi
+EOL
+
+# Yürütme izinleri ayarlayın
+chmod 755 ${build_dir}/DEBIAN/postinst
+chmod 755 ${build_dir}/DEBIAN/prerm
+
+# .deb paketini oluşturun
+echo ".deb paketi oluşturuluyor..."
+dpkg-deb --build ${build_dir}
+
+# Paket başarıyla oluşturulduğunda bilgilendirme yapın
+echo "${pkgname} paketi başarıyla oluşturuldu: ${build_dir}.deb"
+
+# Paketi yükleme komutunu ekleyin (isteğe bağlı)
+echo "Paket yükleniyor..."
+sudo dpkg -i ${build_dir}.deb
