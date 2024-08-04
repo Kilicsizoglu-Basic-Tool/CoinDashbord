@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
                 window.show()
 
     def open_top_negative_coins_window(self):
-        self.top_negative_coins_window.append(TopPositiveCoinWindow())
+        self.top_negative_coins_window.append(TopNegativeCoinWindow())
         for window in self.top_negative_coins_window:
             if not window.isVisible():
                 window.show()
