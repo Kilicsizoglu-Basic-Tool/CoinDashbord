@@ -184,7 +184,8 @@ class BinanceConnect:
             'm': 60,
             'h': 3600,
             'd': 86400,
-            'w': 604800
+            'w': 604800,
+            'M': 2592000
         }
 
         unit = interval[-1]
