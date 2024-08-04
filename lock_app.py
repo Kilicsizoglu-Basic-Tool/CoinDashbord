@@ -70,7 +70,7 @@ def main():
     app = QApplication(sys.argv)
     if not os.path.exists(".coindashbord_config"):
         os.mkdir(".coindashbord_config")
-    app.setWindowIcon(QIcon("/usr/share/coindashboard/icon.ico"))
+    app.setWindowIcon(QIcon("/usr/share/crypto-dashboard/icon.ico"))
     window = LockStatusApp()
     window.show()
     sys.exit(app.exec())

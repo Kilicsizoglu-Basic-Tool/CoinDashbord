@@ -1,21 +1,20 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import QTimer
 import libs.binanceConnectionLock
 import libs.taapiConnectionLock
 import libs.binanceKeyRW
-from ui import KeyWindow
-from ui.CoinStatusWindow import CoinStatusWindow
-from ui.NegativeCoinWindow import NegativeCoinWindow
-from ui.CoinChangeAnalyisWindow import CoinChangeAnalyisWindow
-from ui.PositiveCoinWindow import PositiveCoinWindow
-from ui.VolumePositionWindow import VolumePositionWindow
-from ui.CoinExplorerWindow import CoinExplorerWindow
-from ui.Coin24hChangeWindow import Coin24hChangeWindow
-from ui.FuturePositionWindow import FuturePositionWindow
-from ui.TopPositiveCoinsWindow import TopPositiveCoinWindow
-from ui.TopNegativeCoinWindow import TopNegativeCoinWindow
-from ui.PriceAlertWindow import PriceAlertWindow
+from ui.desktop import KeyWindow
+from ui.desktop.CoinStatusWindow import CoinStatusWindow
+from ui.desktop.NegativeCoinWindow import NegativeCoinWindow
+from ui.desktop.CoinChangeAnalyisWindow import CoinChangeAnalyisWindow
+from ui.desktop.PositiveCoinWindow import PositiveCoinWindow
+from ui.desktop.VolumePositionWindow import VolumePositionWindow
+from ui.desktop.CoinExplorerWindow import CoinExplorerWindow
+from ui.desktop.Coin24hChangeWindow import Coin24hChangeWindow
+from ui.desktop.FuturePositionWindow import FuturePositionWindow
+from ui.desktop.TopPositiveCoinsWindow import TopPositiveCoinWindow
+from ui.desktop.TopNegativeCoinWindow import TopNegativeCoinWindow
+from ui.desktop.PriceAlertWindow import PriceAlertWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
