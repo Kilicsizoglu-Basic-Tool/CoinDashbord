@@ -4,7 +4,6 @@ import pandas as pd
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
 from PyQt6.QtCore import QTimer
 import libs.binanceConnect as binanceConnect
-import libs.twilioConnect as twilioConnect
 import libs.binanceConnectionLock
 
 
@@ -104,9 +103,6 @@ class TopNegativeCoinWindow(QWidget):
             if lowest_coin:
                 message = f"Lowest Coin: {lowest_coin} with price: {lowest_price}"
                 self.coin_list_widget.addItem(message)
-
-                # Twilio ile SMS gönder
-                self.twilio.sendSMS(message)
 
         except Exception as e:
             print(f"An error occurred during timer execution: {str(e)}")
