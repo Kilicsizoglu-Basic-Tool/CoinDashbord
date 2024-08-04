@@ -9,7 +9,7 @@ import libs.binanceConnectionLock
 class TopPositiveCoinWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Crypto Tracker')
+        self.setWindowTitle('Crypto Tracker - Positive Trend')
         self.setGeometry(100, 100, 600, 400)
 
         self.layout = QVBoxLayout()

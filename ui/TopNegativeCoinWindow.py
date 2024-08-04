@@ -6,7 +6,7 @@ import libs.twilioConnect as twilioConnect
 import libs.binanceConnectionLock
 
 
-class CryptoApp(QWidget):
+class TopNegativeCoinWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Crypto Tracker - Negative Trend')

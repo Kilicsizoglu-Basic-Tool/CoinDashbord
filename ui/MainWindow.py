@@ -13,7 +13,8 @@ from ui.VolumePositionWindow import VolumePositionWindow
 from ui.CoinExplorerWindow import CoinExplorerWindow
 from ui.Coin24hChangeWindow import Coin24hChangeWindow
 from ui.FuturePositionWindow import FuturePositionWindow
-
+from ui.TopPositiveCoinsWindow import TopPositiveCoinWindow
+from ui.TopNegativeCoinWindow import TopNegativeCoinWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -135,13 +136,13 @@ class MainWindow(QMainWindow):
             self.key_status_text.setText("Key Status: No Key File Found")
 
     def open_top_positive_coins_window(self):
-        self.top_positive_coins_window.append(PositiveCoinWindow())
+        self.top_positive_coins_window.append(TopPositiveCoinWindow())
         for window in self.top_positive_coins_window:
             if not window.isVisible():
                 window.show()
 
     def open_top_negative_coins_window(self):
-        self.top_negative_coins_window.append(NegativeCoinWindow())
+        self.top_negative_coins_window.append(TopPositiveCoinWindow())
         for window in self.top_negative_coins_window:
             if not window.isVisible():
                 window.show()
