@@ -128,6 +128,8 @@ class MainWindow(QMainWindow):
             self.positive_coin_button.setEnabled(False)
             self.coin_explorer_button.setEnabled(False)
             self.coin_change_analysis_button.setEnabled(False)
+            self.top_positive_coins_button.setEnabled(False)
+            self.top_negative_coins_button.setEnabled(False)
             self.volume_position_button.setEnabled(False)
             self.key_status_button.setEnabled(True)
             self.key_status_text.setText("Key Status: No Key File Found")

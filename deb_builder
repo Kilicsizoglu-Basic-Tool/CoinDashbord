@@ -1,0 +1,38 @@
+#!/bin/sh
+
+version="v3"
+
+rm -rf ../coindashboard${version}
+
+# This script is used to build a debian package from a source package
+# It is used by the deb_builder container
+mkdir ../coindashboard${version}
+mkdir ../coindashboard${version}/DEBIAN
+mkdir ../coindashboard${version}/usr
+mkdir ../coindashboard${version}/usr/bin
+mkdir ../coindashboard${version}/usr/share
+mkdir ../coindashboard${version}/usr/share/coindashboard
+mkdir ../coindashboard${version}/usr/share/applications
+
+cp -r ./libs ../coindashboard${version}/usr/share/coindashboard/libs
+cp -r ./ui ../coindashboard${version}/usr/share/coindashboard/ui
+cp ./coindashboard ../coindashboard${version}/usr/bin/coindashboard
+cp ./coindashboard_lock_app ../coindashboard${version}/usr/bin/coindashboard_lock_app
+cp ./icon.png ../coindashboard${version}/usr/share/coindashboard/icon.png
+cp ./icon.ico ../coindashboard${version}/usr/share/coindashboard/icon.ico
+cp ./app.py ../coindashboard${version}/usr/share/coindashboard/app.py
+cp ./lock_app.py ../coindashboard${version}/usr/share/coindashboard/lock_app.py
+cp ../DEBIAN/control ../coindashboard${version}/DEBIAN/control
+cp ../DEBIAN/prerm ../coindashboard${version}/DEBIAN/prerm
+cp ../DEBIAN/postinst ../coindashboard${version}/DEBIAN/postinst
+cp ../DEBIAN/coindashboard.desktop ../coindashboard${version}/usr/share/applications/coindashboard.desktop
+cp ../DEBIAN/coindashboard_lock_app.desktop ../coindashboard${version}/usr/share/applications/coindashboard_lock_app.desktop
+cp ./requirements.txt ../coindashboard${version}/usr/share/coindashboard/requirements.txt
+
+cd ../coindashboard${version}
+
+dpkg-deb --build ../coindashboard${version}
+
+cd ..
+
+sudo dpkg -i coindashboard${version}.deb
