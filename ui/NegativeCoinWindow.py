@@ -88,12 +88,10 @@ class NegativeCoinWindow(QWidget):
 
                 self.fetch_and_display_potential_coins(negative_coins)
 
-            # Fetch and display RSI/StochRSI for potential coins
-            lock.release()
-
-                
         except Exception as e:
             print(f"An error occurred: {str(e)}")
+
+        lock.release()
 
     def calculate_negative_changes(self, data):
         """Calculate average percentage changes for each coin and find negative ones."""

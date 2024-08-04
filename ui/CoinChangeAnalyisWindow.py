@@ -79,6 +79,8 @@ class CoinChangeAnalyisWindow(QWidget):
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
+        lock.release()
+
     def calculate_average_changes(self, data):
         """Calculate average percentage changes for each coin."""
         changes = {}

@@ -61,11 +61,11 @@ class TopPositiveCoinWindow(QWidget):
                     # Twilio ile SMS gönder
                     self.twilio.sendSMS(message)
 
-                lock_instance.release()
-
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
+
+        lock_instance.release()
 
     def find_highest_coin(self, kline_data):
         highest_average_price = 0
