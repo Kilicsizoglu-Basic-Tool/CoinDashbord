@@ -1,4 +1,6 @@
 import sys
+
+import pandas as pd
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
 from PyQt6.QtCore import QTimer
 import libs.binanceConnect as binanceConnect
@@ -68,19 +70,27 @@ class TopPositiveCoinWindow(QWidget):
     def find_highest_coin(self, kline_data):
         highest_average_price = 0
         highest_coin = None
+
         for symbol, data in kline_data.items():
-            if data and len(data) >= 100:
-                # Alınan verileri son 100 kapanış fiyatı ile sınırla
-                closing_prices = [float(kline[4]) for kline in data[-100:]]
+            # Verify that the data is a DataFrame and contains the necessary columns
+            if isinstance(data, pd.DataFrame) and 'close' in data.columns and len(data) >= 100:
+                try:
+                    # Convert the 'close' column to float
+                    closing_prices = data['close'].astype(float).tolist()
 
-                # En yüksek 10 fiyatı seç ve ortalamasını al
-                top_10_closing_prices = sorted(closing_prices, reverse=True)[:10]
-                average_top_10 = sum(top_10_closing_prices) / len(top_10_closing_prices)
+                    # Calculate the average of the top 10 closing prices
+                    top_10_closing_prices = sorted(closing_prices, reverse=True)[:10]
+                    average_top_10 = sum(top_10_closing_prices) / len(top_10_closing_prices)
 
-                # En yüksek ortalamayı belirle
-                if average_top_10 > highest_average_price:
-                    highest_average_price = average_top_10
-                    highest_coin = symbol
+                    # Check if this is the highest average found so far
+                    if average_top_10 > highest_average_price:
+                        highest_average_price = average_top_10
+                        highest_coin = symbol
+
+                except ValueError as e:
+                    print(f"Error converting closing prices to float for {symbol}: {e}")
+                except Exception as e:
+                    print(f"Unexpected error processing {symbol}: {e}")
 
         return highest_coin, highest_average_price
 

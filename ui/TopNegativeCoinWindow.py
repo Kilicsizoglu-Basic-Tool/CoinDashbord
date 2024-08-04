@@ -65,24 +65,23 @@ class TopNegativeCoinWindow(QWidget):
             print(f"An error occurred: {str(e)}")
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
 
-    def find_lowest_coin(self, kline_data):
-        lowest_average_price = float('inf')
-        lowest_coin = None
-        for symbol, data in kline_data.items():
-            if data and len(data) >= 100:
-                # Get the closing prices of the last 100 klines
-                closing_prices = [float(kline[4]) for kline in data[-100:]]
+    def fetch_and_display_lowest_coin(self):
+        try:
+            symbols = self.binance.get_all_symbols()
+            interval = self.time_interval_combo.currentText()
+            kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
 
-                # Select the 10 lowest prices and calculate their average
-                bottom_10_closing_prices = sorted(closing_prices)[:10]
-                average_bottom_10 = sum(bottom_10_closing_prices) / len(bottom_10_closing_prices)
+            lowest_coin, lowest_price = self.find_lowest_coin(kline_data)
+            if lowest_coin:
+                message = f"Lowest Coin: {lowest_coin} with average bottom 10 price: {lowest_price:.2f}"
+                self.coin_list_widget.addItem(message)
 
-                # Determine the lowest average price
-                if average_bottom_10 < lowest_average_price:
-                    lowest_average_price = average_bottom_10
-                    lowest_coin = symbol
+                # Send SMS with Twilio
+                self.twilio.sendSMS(message)
 
-        return lowest_coin, lowest_average_price
+        except Exception as e:
+            print(f"An error occurred during timer execution: {str(e)}")
+            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
 
     def fetch_and_display_lowest_coin(self):
         try:
