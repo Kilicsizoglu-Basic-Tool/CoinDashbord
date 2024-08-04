@@ -15,6 +15,7 @@ from ui.Coin24hChangeWindow import Coin24hChangeWindow
 from ui.FuturePositionWindow import FuturePositionWindow
 from ui.TopPositiveCoinsWindow import TopPositiveCoinWindow
 from ui.TopNegativeCoinWindow import TopNegativeCoinWindow
+from ui.PriceAlertWindow import PriceAlertWindow
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -32,6 +33,9 @@ class MainWindow(QMainWindow):
         self.timer = QTimer()
         self.timer.timeout.connect(self.lock_status)
         self.timer.start(1000)
+
+        self.price_alarm_button = QPushButton("Price Alarm", self)
+        self.price_alarm_button.clicked.connect(self.open_price_alarm_window)
 
         self.daily_change_button = QPushButton("24h Change", self)
         self.daily_change_button.clicked.connect(self.open_24h_change_window)
@@ -80,6 +84,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.future_position_button)
         layout.addWidget(self.top_positive_coins_button)
         layout.addWidget(self.top_negative_coins_button)
+        layout.addWidget(self.price_alarm_button)
 
         self.setCentralWidget(main_widget)
 
@@ -97,6 +102,7 @@ class MainWindow(QMainWindow):
         self.top_negative_coins_window = []
         self.volume_position_window = []
         self.coin_24h_change_window = []
+        self.price_alarm_window = []
 
     def lock_status(self):
         binanceLock = libs.binanceConnectionLock.BinanceFileLock()
@@ -119,6 +125,7 @@ class MainWindow(QMainWindow):
             self.coin_change_analysis_button.setEnabled(True)
             self.top_positive_coins_button.setEnabled(True)
             self.top_negative_coins_button.setEnabled(True)
+            self.price_alarm_button.setEnabled(True)
             self.key_status_button.setEnabled(False)
             self.key_status_text.setText("Key Status: Key File Found")
         elif bc.api_key is None:
@@ -132,8 +139,15 @@ class MainWindow(QMainWindow):
             self.top_positive_coins_button.setEnabled(False)
             self.top_negative_coins_button.setEnabled(False)
             self.volume_position_button.setEnabled(False)
+            self.price_alarm_button.setEnabled(False)
             self.key_status_button.setEnabled(True)
             self.key_status_text.setText("Key Status: No Key File Found")
+
+    def open_price_alarm_window(self):
+        self.price_alarm_window.append(PriceAlertWindow())
+        for window in self.price_alarm_window:
+            if not window.isVisible():
+                window.show()
 
     def open_top_positive_coins_window(self):
         self.top_positive_coins_window.append(TopPositiveCoinWindow())
