@@ -7,6 +7,8 @@ __pycache__/
 .coindashboard_config
 .coindashboard-venv/
 .coindashboard_config/
+.coindashbord_config/
+.coindashbord_config/.binance_api_keys.csv
 
 # Debug and IDE configuration
 .debug
