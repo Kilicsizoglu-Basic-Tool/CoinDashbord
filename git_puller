@@ -1,0 +1,4 @@
+#!/bin/sh
+cd ../CoinDashbord
+git pull
+cd ~/Desktop/CoinDashboard/src/
