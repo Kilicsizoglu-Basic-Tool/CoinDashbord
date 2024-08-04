@@ -96,6 +96,7 @@ class TopNegativeCoinWindow(QWidget):
 
     def fetch_and_display_lowest_coin(self):
         try:
+            self.coin_list_widget.clear()
             symbols = self.binance.get_all_symbols()
             interval = self.time_interval_combo.currentText()
             kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
