@@ -1,9 +1,9 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
-Name=coindashboard
+Name=coindashboard trade
 Comment=A simple application to display negative coin changes.
-Exec=bash -c crypto-dashboard
+Exec=bash -c crypto-dashboard_trade
 Icon=/usr/share/crypto-dashboard/icon.png
 Terminal=false
 Type=Application

@@ -1,17 +1,7 @@
 #!/bin/sh
 
-find ../CoinDashbord -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
-cp -rf ./* ../CoinDashbord/
-rm ../CoinDashbord/libs/twilioConnect.py
-cd ../CoinDashbord
-find . -name '__pycache__' -exec rm -rf {} +
-find . -name '.coindashboard_config' -exec rm -rf {} +
-find . -name '.debug' -exec rm -rf {} +
-find . -name '.vscode' -exec rm -rf {} +
-find . -name '.debug_tmp' -exec rm -rf {} +
-find . -name '.coindashboard-venv' -exec rm -rf {} +
 git add .
 git commit -m "update"
 git push
-cd ~/Desktop/CoinDashboard/src/
+
 echo "Done"

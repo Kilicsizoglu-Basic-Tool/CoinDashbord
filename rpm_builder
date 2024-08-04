@@ -7,32 +7,35 @@ package_name="coindashboard"
 
 # RPM yapı dizinlerini temizleyin
 echo "Önceki yapı dosyaları temizleniyor..."
-rm -rf ~/rpmbuild/BUILD/${package_name}-${version}
-rm -rf ~/rpmbuild/RPMS/noarch/${package_name}-${version}-${release}.noarch.rpm
+rm -rf ./rpmbuild/BUILD/${package_name}-${version}
+rm -rf ./rpmbuild/RPMS/noarch/${package_name}-${version}-${release}.noarch.rpm
 
 # Kaynak ve RPM yapı dizinlerini oluşturun
-mkdir -p ~/rpmbuild/SOURCES
-mkdir -p ~/rpmbuild/BUILD/${package_name}-${version}/usr/bin
-mkdir -p ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}
-mkdir -p ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/applications
+mkdir -p ./rpmbuild/SOURCES
+mkdir -p ./rpmbuild/BUILD/${package_name}-${version}/usr/bin
+mkdir -p ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}
+mkdir -p ./rpmbuild/BUILD/${package_name}-${version}/usr/share/applications
 
 # Gerekli dosyaları kopyalayın
 echo "Gerekli dosyalar kopyalanıyor..."
-cp -r ./libs ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/libs
-cp -r ./ui ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/ui
-cp ./coindashboard ~/rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard
-cp ./coindashboard_lock_app ~/rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard_lock_app
-cp ./icon.png ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/icon.png
-cp ./icon.ico ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/icon.ico
-cp ./app.py ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/app.py
-cp ./lock_app.py ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/lock_app.py
-cp ./coindashboard.desktop ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard.desktop
-cp ./coindashboard_lock_app.desktop ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard_lock_app.desktop
-cp ./requirements.txt ~/rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/requirements.txt
+cp -r ./libs ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/libs
+cp -r ./ui ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/ui
+cp ./coindashboard ./rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard
+cp ./coindashboard_trade ./rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard_trade
+cp ./coindashboard_lock_app ./rpmbuild/BUILD/${package_name}-${version}/usr/bin/coindashboard_lock_app
+cp ./icon.png ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/icon.png
+cp ./icon.ico ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/icon.ico
+cp ./app.py ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/app.py
+cp ./trade.py ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/trade.py
+cp ./lock_app.py ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/lock_app.py
+cp ./coindashboard.desktop ./rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard.desktop
+cp ./coindashboard_trade.desktop ./rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard_trade.desktop
+cp ./coindashboard_lock_app.desktop ./rpmbuild/BUILD/${package_name}-${version}/usr/share/applications/coindashboard_lock_app.desktop
+cp ./requirements.txt ./rpmbuild/BUILD/${package_name}-${version}/usr/share/${package_name}/requirements.txt
 
 # SPEC dosyasını oluşturun
 echo "SPEC dosyası oluşturuluyor..."
-cat > ~/rpmbuild/SPECS/${package_name}.spec <<EOL
+cat > ./rpmbuild/SPECS/${package_name}.spec <<EOL
 Name:           ${package_name}
 Version:        ${version}
 Release:        ${release}%{?dist}
@@ -87,9 +90,11 @@ fi
 
 %files
 /usr/bin/coindashboard
+/usr/bin/coindashboard_trade
 /usr/bin/coindashboard_lock_app
 /usr/share/%{name}
 /usr/share/applications/coindashboard.desktop
+/usr/share/applications/coindashboard_trade.desktop
 /usr/share/applications/coindashboard_lock_app.desktop
 
 %changelog
@@ -99,11 +104,11 @@ EOL
 
 # Kaynak dosyalarını arşivleyin
 echo "Kaynak dosyaları arşivleniyor..."
-tar -czf ~/rpmbuild/SOURCES/${package_name}-${version}.tar.gz -C ~/rpmbuild/BUILD/ ${package_name}-${version}
+tar -czf ./rpmbuild/SOURCES/${package_name}-${version}.tar.gz -C ./rpmbuild/BUILD/ ${package_name}-${version}
 
 # RPM paketini oluşturun
 echo "RPM paketi oluşturuluyor..."
-rpmbuild -ba ~/rpmbuild/SPECS/${package_name}.spec
+rpmbuild -ba ./rpmbuild/SPECS/${package_name}.spec
 
 # Oluşturulan RPM paketini kontrol edin
-echo "RPM paketi oluşturuldu: ~/rpmbuild/RPMS/noarch/${package_name}-${version}-${release}.noarch.rpm"
+echo "RPM paketi oluşturuldu: ./rpmbuild/RPMS/noarch/${package_name}-${version}-${release}.noarch.rpm"

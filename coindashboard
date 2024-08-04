@@ -4,7 +4,7 @@
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Sanal ortam dizini
-VENV_DIR="$DIR/../share/coindashboard/coindashboard-venv"
+VENV_DIR="$DIR/../share/crypto-dashboard/crypto-dashboard-venv"
 #VENV_DIR=".coindashboard-venv"
 
 # Sanal ortam mevcut değilse oluştur
@@ -19,10 +19,10 @@ source "$VENV_DIR/bin/activate"
 
 # Gerekli bağımlılıkları yükle
 echo "Bağımlılıklar yükleniyor..."
-pip install -r "$DIR/../share/coindashboard/requirements.txt"
+pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"
 #pip install -r "./requirements.txt"
 
 # Uygulamayı çalıştır
 echo "Uygulama başlatılıyor..."
-python3 "$DIR/../share/coindashboard/app.py"
+python3 "$DIR/../share/crypto-dashboard/app.py"
 #python3 "./app.py"

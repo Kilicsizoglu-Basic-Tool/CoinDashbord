@@ -3,7 +3,7 @@
 Version=1.0
 Name=coindashboard lock app
 Comment=A simple application to display negative coin changes.
-Exec=bash -c coindashboard_lock_app
+Exec=bash -c crypto-dashboard_lock_app
 Icon=/usr/share/crypto-dashboard/icon.png
 Terminal=false
 Type=Application

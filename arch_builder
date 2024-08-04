@@ -10,6 +10,11 @@ license=("GPL")
 arch=("any")
 depends=("python" "python-virtualenv")
 
+mkdir "arch_builder"
+cd "arch_builder"
+mkdir "${pkgname}-${pkgver}"
+pkgdir = "./${pkgname}-${pkgver}"
+
 # Önceki dosyaları temizle
 echo "Önceki dosyalar temizleniyor..."
 rm -rf src pkg "${pkgname}-${pkgver}.tar.gz" PKGBUILD
@@ -54,6 +59,7 @@ package() {
 
   # Çalıştırılabilir dosyaları kopyala
   install -Dm755 "coindashboard" "\$pkgdir/usr/bin/coindashboard"
+  install -Dm755 "coindashboard_trade" "\$pkgdir/usr/bin/coindashboard_trade"
   install -Dm755 "coindashboard_lock_app" "\$pkgdir/usr/bin/coindashboard_lock_app"
 
   # Diğer dosyaları kopyala
@@ -62,8 +68,10 @@ package() {
   cp "icon.png" "\$pkgdir/usr/share/\${pkgname}/icon.png"
   cp "icon.ico" "\$pkgdir/usr/share/\${pkgname}/icon.ico"
   cp "app.py" "\$pkgdir/usr/share/\${pkgname}/app.py"
+  cp "trade.py" "\$pkgdir/usr/share/\${pkgname}/trade.py"
   cp "lock_app.py" "\$pkgdir/usr/share/\${pkgname}/lock_app.py"
   cp "requirements.txt" "\$pkgdir/usr/share/\${pkgname}/requirements.txt"
+  cp "coindashboard_trade.desktop" "\$pkgdir/usr/share/applications/coindashboard_trade.desktop"
   cp "coindashboard.desktop" "\$pkgdir/usr/share/applications/coindashboard.desktop"
   cp "coindashboard_lock_app.desktop" "\$pkgdir/usr/share/applications/coindashboard_lock_app.desktop"
 }

@@ -1,9 +1,11 @@
 #!/bin/bash
 
 # Paket bilgileri
-version="1.0-1"
+version="5.5-5"
 pkgname="crypto-dashboard"
-build_dir="../${pkgname}_deb_${version}"
+mkdir "deb_build"
+mkdir "${pkgname}_deb_${version}"
+build_dir="./deb_build/${pkgname}_deb_${version}"
 
 # Mevcut yapı dizinini temizleyin
 echo "Önceki yapı dizinleri temizleniyor..."
@@ -21,19 +23,17 @@ echo "Dosyalar kopyalanıyor..."
 cp -r ./libs ${build_dir}/usr/share/${pkgname}/libs
 cp -r ./ui ${build_dir}/usr/share/${pkgname}/ui
 cp ./coindashboard ${build_dir}/usr/bin/${pkgname}
+cp ./coindashboard_trade ${build_dir}/usr/bin/${pkgname}_trade
 cp ./coindashboard_lock_app ${build_dir}/usr/bin/${pkgname}_lock_app
 cp ./icon.png ${build_dir}/usr/share/${pkgname}/icon.png
 cp ./icon.ico ${build_dir}/usr/share/${pkgname}/icon.ico
 cp ./app.py ${build_dir}/usr/share/${pkgname}/app.py
+cp ./trade.py ${build_dir}/usr/share/${pkgname}/trade.py
 cp ./lock_app.py ${build_dir}/usr/share/${pkgname}/lock_app.py
 cp ./requirements.txt ${build_dir}/usr/share/${pkgname}/requirements.txt
 cp ./coindashboard.desktop ${build_dir}/usr/share/applications/${pkgname}.desktop
+cp ./coindashboard_trade.desktop ${build_dir}/usr/share/applications/${pkgname}_trade.desktop
 cp ./coindashboard_lock_app.desktop ${build_dir}/usr/share/applications/${pkgname}_lock_app.desktop
-
-# DEBIAN dizinindeki dosyaları kopyalayın
-cp ./DEBIAN/control ${build_dir}/DEBIAN/control
-cp ./DEBIAN/prerm ${build_dir}/DEBIAN/prerm
-cp ./DEBIAN/postinst ${build_dir}/DEBIAN/postinst
 
 # Paket bilgileri (control) dosyasını oluşturun
 cat > ${build_dir}/DEBIAN/control <<EOL
@@ -113,11 +113,11 @@ chmod 755 ${build_dir}/DEBIAN/prerm
 
 # .deb paketini oluşturun
 echo ".deb paketi oluşturuluyor..."
-dpkg-deb --build ${build_dir}
+dpkg-deb --build ${build_dir} ${build_dir}/coindashboard.deb
 
 # Paket başarıyla oluşturulduğunda bilgilendirme yapın
-echo "${pkgname} paketi başarıyla oluşturuldu: ${build_dir}.deb"
+echo "${pkgname} paketi başarıyla oluşturuldu: coindashboard.deb"
 
 # Paketi yükleme komutunu ekleyin (isteğe bağlı)
 echo "Paket yükleniyor..."
-sudo dpkg -i ${build_dir}.deb
+sudo dpkg -i ${build_dir}/coindashboard.deb

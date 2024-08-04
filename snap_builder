@@ -3,7 +3,7 @@
 # Paket bilgileri
 pkgname="coindashboard"
 version="3.0"
-snap_src_dir="../snap-src"
+snap_src_dir="./snap-src"
 
 # Mevcut yapı dosyalarını temizleyin
 echo "Önceki yapı dosyaları temizleniyor..."
@@ -15,13 +15,16 @@ mkdir -p ${snap_src_dir}
 cp -r ./libs ${snap_src_dir}/libs
 cp -r ./ui ${snap_src_dir}/ui
 cp ./coindashboard ${snap_src_dir}/coindashboard
+cp ./coindashboard_trade ${snap_src_dir}/coindashboard_trade
 cp ./coindashboard_lock_app ${snap_src_dir}/coindashboard_lock_app
 cp ./icon.png ${snap_src_dir}/icon.png
 cp ./icon.ico ${snap_src_dir}/icon.ico
 cp ./app.py ${snap_src_dir}/app.py
+cp ./trade.py ${snap_src_dir}/trade.py
 cp ./lock_app.py ${snap_src_dir}/lock_app.py
 cp ./requirements.txt ${snap_src_dir}/requirements.txt
 cp ./coindashboard.desktop ${snap_src_dir}/coindashboard.desktop
+cp ./coindashboard_trade ${snap_src_dir}/coindashboard_trade.desktop
 cp ./coindashboard_lock_app.desktop ${snap_src_dir}/coindashboard_lock_app.desktop
 
 # snapcraft.yaml dosyasını oluşturun
@@ -54,6 +57,10 @@ apps:
   coindashboard-lock-app:
     command: bin/coindashboard_lock_app
     desktop: coindashboard_lock_app.desktop
+
+  coindashboard-trade:
+    command: bin/coindashboard_trade
+    desktop: coindashboard_trade.desktop
 EOL
 
 # Snap paketini oluşturun

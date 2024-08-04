@@ -1,0 +1,45 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configuration and environment files
+.coindashboard_config
+.coindashboard-venv/
+
+# Debug and IDE configuration
+.debug
+.debug_tmp
+.vscode/
+.idea/
+ libs/twilioConnect.py
+
+# Build and distribution folders
+deb_build/
+
+# Python virtual environment
+venv/
+ENV/
+env/
+ENV.bak/
+env.bak/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# macOS files
+.DS_Store
+
+# System files
+Thumbs.db
+desktop.ini
+
+# Log files
+*.log
+
+# Local development files
+*.local
+
+# Cache files
+.cache/
+*.swp
