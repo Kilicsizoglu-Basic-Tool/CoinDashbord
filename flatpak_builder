@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Flatpak paket bilgileri
+app_id="com.kilicsizoglu.CryptoDashboard"
+runtime="org.freedesktop.Platform"
+sdk="org.freedesktop.Sdk"
+runtime_version="21.08"
+package_name="coindashboard"
+version="3.0"
+
+# Önceki yapı dizinlerini temizleyin
+echo "Önceki yapı dizinleri temizleniyor..."
+rm -rf build-dir ${package_name}-${version}.flatpak
+
+# manifest dosyası oluşturun
+echo "Flatpak manifest dosyası oluşturuluyor..."
+cat > manifest.json <<EOL
+{
+    "id": "${app_id}",
+    "runtime": "${runtime}",
+    "runtime-version": "${runtime_version}",
+    "sdk": "${sdk}",
+    "command": "coindashboard",
+    "finish-args": [
+        "--share=network",
+        "--socket=x11",
+        "--socket=wayland",
+        "--device=dri",
+        "--filesystem=home"
+    ],
+    "modules": [
+        {
+            "name": "${package_name}",
+            "buildsystem": "simple",
+            "build-commands": [
+                "install -Dm755 coindashboard /app/bin/coindashboard",
+                "install -Dm755 coindashboard_lock_app /app/bin/coindashboard_lock_app",
+                "cp -r libs /app/share/coindashboard/libs",
+                "cp -r ui /app/share/coindashboard/ui",
+                "install -Dm644 icon.png /app/share/coindashboard/icon.png",
+                "install -Dm644 icon.ico /app/share/coindashboard/icon.ico",
+                "install -Dm644 app.py /app/share/coindashboard/app.py",
+                "install -Dm644 lock_app.py /app/share/coindashboard/lock_app.py",
+                "install -Dm644 requirements.txt /app/share/coindashboard/requirements.txt",
+                "install -Dm644 coindashboard.desktop /app/share/applications/${app_id}.desktop",
+                "install -Dm644 coindashboard_lock_app.desktop /app/share/applications/${app_id}_lock_app.desktop"
+            ],
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "."
+                }
+            ]
+        }
+    ]
+}
+EOL
+
+# Flatpak paketini oluşturun
+echo "Flatpak paketi oluşturuluyor..."
+flatpak-builder --force-clean build-dir manifest.json
+
+# Flatpak paketini kurun
+echo "Flatpak paketi yükleniyor..."
+flatpak-builder --user --install --force-clean build-dir manifest.json
+
+# Paketin başarıyla oluşturulduğunu belirtin
+echo "Flatpak paketi başarıyla oluşturuldu: ${package_name}-${version}.flatpak"

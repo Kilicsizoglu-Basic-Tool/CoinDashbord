@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Paket bilgileri
+pkgname="coindashboard"
+version="3.0"
+snap_src_dir="../snap-src"
+
+# Mevcut yapı dosyalarını temizleyin
+echo "Önceki yapı dosyaları temizleniyor..."
+rm -rf ./snap ./*.snap ./${snap_src_dir}
+
+# Kaynak dosyalarını dizine kopyalayın
+echo "Kaynak dosyalar ${snap_src_dir} dizinine kopyalanıyor..."
+mkdir -p ${snap_src_dir}
+cp -r ./libs ${snap_src_dir}/libs
+cp -r ./ui ${snap_src_dir}/ui
+cp ./coindashboard ${snap_src_dir}/coindashboard
+cp ./coindashboard_lock_app ${snap_src_dir}/coindashboard_lock_app
+cp ./icon.png ${snap_src_dir}/icon.png
+cp ./icon.ico ${snap_src_dir}/icon.ico
+cp ./app.py ${snap_src_dir}/app.py
+cp ./lock_app.py ${snap_src_dir}/lock_app.py
+cp ./requirements.txt ${snap_src_dir}/requirements.txt
+cp ./coindashboard.desktop ${snap_src_dir}/coindashboard.desktop
+cp ./coindashboard_lock_app.desktop ${snap_src_dir}/coindashboard_lock_app.desktop
+
+# snapcraft.yaml dosyasını oluşturun
+echo "snapcraft.yaml dosyası oluşturuluyor..."
+cat > snapcraft.yaml <<EOL
+name: ${pkgname}
+version: '${version}'
+summary: A comprehensive dashboard for monitoring cryptocurrency markets
+description: |
+  Provides real-time insights and analysis on crypto trends, helping users to make informed trading decisions.
+confinement: strict
+base: core20
+grade: stable
+
+parts:
+  ${pkgname}:
+    plugin: python
+    source: ${snap_src_dir}
+    stage-packages:
+      - python3-pip
+      - python3-venv
+    python-packages:
+      - -r requirements.txt
+
+apps:
+  coindashboard:
+    command: bin/coindashboard
+    desktop: coindashboard.desktop
+
+  coindashboard-lock-app:
+    command: bin/coindashboard_lock_app
+    desktop: coindashboard_lock_app.desktop
+EOL
+
+# Snap paketini oluşturun
+echo "Snap paketi oluşturuluyor..."
+snapcraft
+
+# Paketin başarıyla oluşturulduğunu belirtin
+echo "Snap paketi başarıyla oluşturuldu: ${pkgname}_${version}_amd64.snap"
