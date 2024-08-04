@@ -1,4 +1,6 @@
 import sys
+
+import pandas as pd
 from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
 from PyQt6.QtCore import QTimer
 import libs.binanceConnect as binanceConnect
