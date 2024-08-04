@@ -65,23 +65,32 @@ class TopNegativeCoinWindow(QWidget):
             print(f"An error occurred: {str(e)}")
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
 
-    def fetch_and_display_lowest_coin(self):
-        try:
-            symbols = self.binance.get_all_symbols()
-            interval = self.time_interval_combo.currentText()
-            kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
+    def find_lowest_coin(self, kline_data):
+        lowest_average_price = float('inf')
+        lowest_coin = None
 
-            lowest_coin, lowest_price = self.find_lowest_coin(kline_data)
-            if lowest_coin:
-                message = f"Lowest Coin: {lowest_coin} with average bottom 10 price: {lowest_price:.2f}"
-                self.coin_list_widget.addItem(message)
+        for symbol, data in kline_data.items():
+            # Ensure the data is a DataFrame with at least 100 rows and a 'close' column
+            if isinstance(data, pd.DataFrame) and 'close' in data.columns and len(data) >= 100:
+                try:
+                    # Extract the closing prices from the last 100 klines
+                    closing_prices = data['close'].astype(float).tolist()[-100:]
 
-                # Send SMS with Twilio
-                self.twilio.sendSMS(message)
+                    # Calculate the average of the 10 lowest closing prices
+                    bottom_10_closing_prices = sorted(closing_prices)[:10]
+                    average_bottom_10 = sum(bottom_10_closing_prices) / len(bottom_10_closing_prices)
 
-        except Exception as e:
-            print(f"An error occurred during timer execution: {str(e)}")
-            QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
+                    # Determine if this is the lowest average price so far
+                    if average_bottom_10 < lowest_average_price:
+                        lowest_average_price = average_bottom_10
+                        lowest_coin = symbol
+
+                except ValueError as e:
+                    print(f"Error converting closing prices to float for {symbol}: {e}")
+                except Exception as e:
+                    print(f"Unexpected error processing {symbol}: {e}")
+
+        return lowest_coin, lowest_average_price
 
     def fetch_and_display_lowest_coin(self):
         try:
