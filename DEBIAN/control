@@ -1,0 +1,10 @@
+Package: crypto-dashboard
+Version: 1.0-1
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Fatih Yolcu <kilicsizoglu@gmail.com>
+Depends: python3
+Description: Crypto Dashboard Application
+ A comprehensive dashboard for monitoring cryptocurrency markets.
+ Provides real-time insights and analysis on crypto trends, helping users to make informed trading decisions.

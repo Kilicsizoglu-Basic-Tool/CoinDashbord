@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Name=coindashboard
+Comment=A simple application to display negative coin changes.
+Exec=bash -c coindashboard
+Icon=/usr/share/coindashboard/icon.png
+Terminal=false
+Type=Application
+Categories=Utility;

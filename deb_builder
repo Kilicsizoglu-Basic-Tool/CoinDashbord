@@ -22,11 +22,11 @@ cp ./icon.png ../coindashboard${version}/usr/share/coindashboard/icon.png
 cp ./icon.ico ../coindashboard${version}/usr/share/coindashboard/icon.ico
 cp ./app.py ../coindashboard${version}/usr/share/coindashboard/app.py
 cp ./lock_app.py ../coindashboard${version}/usr/share/coindashboard/lock_app.py
-cp ../DEBIAN/control ../coindashboard${version}/DEBIAN/control
-cp ../DEBIAN/prerm ../coindashboard${version}/DEBIAN/prerm
-cp ../DEBIAN/postinst ../coindashboard${version}/DEBIAN/postinst
-cp ../DEBIAN/coindashboard.desktop ../coindashboard${version}/usr/share/applications/coindashboard.desktop
-cp ../DEBIAN/coindashboard_lock_app.desktop ../coindashboard${version}/usr/share/applications/coindashboard_lock_app.desktop
+cp ./DEBIAN/control ../coindashboard${version}/DEBIAN/control
+cp ./DEBIAN/prerm ../coindashboard${version}/DEBIAN/prerm
+cp ./DEBIAN/postinst ../coindashboard${version}/DEBIAN/postinst
+cp ./DEBIAN/coindashboard.desktop ../coindashboard${version}/usr/share/applications/coindashboard.desktop
+cp ./DEBIAN/coindashboard_lock_app.desktop ../coindashboard${version}/usr/share/applications/coindashboard_lock_app.desktop
 cp ./requirements.txt ../coindashboard${version}/usr/share/coindashboard/requirements.txt
 
 cd ../coindashboard${version}
