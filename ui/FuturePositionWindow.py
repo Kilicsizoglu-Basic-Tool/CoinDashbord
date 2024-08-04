@@ -133,7 +133,7 @@ class FuturePositionWindow(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.load_chart)
         self.timer.timeout.connect(self.update_price)  # Update price every interval
-        self.timer.start(15 * 1000)  # 15 seconds interval
+        self.timer.start(60 * 1000)  # 15 seconds interval
 
         # Test mode balance
         self.test_balance = 1000.0  # $1000 simulated balance
@@ -145,7 +145,7 @@ class FuturePositionWindow(QMainWindow):
         # Trade history table
         self.trade_history_table = QTableWidget()
         self.trade_history_table.setColumnCount(5)
-        self.trade_history_table.setHorizontalHeaderLabels(["Symbol", "Quantity", "Side", "Leverage", "Balance"])
+        self.trade_history_table.setHorizontalHeaderLabels(["Symbol", "Quantity", "Side", "Price", "Leverage", "Balance"])
         self.layout.addWidget(self.trade_history_table)
 
         # Save trade data button
@@ -326,7 +326,8 @@ class FuturePositionWindow(QMainWindow):
         for row, trade in enumerate(trades_to_display):
             self.trade_history_table.setItem(row, 0, QTableWidgetItem(trade["symbol"]))
             self.trade_history_table.setItem(row, 1, QTableWidgetItem(str(trade["quantity"])))
-            self.trade_history_table.setItem(row, 2, QTableWidgetItem(trade["side"]))
+            self.trade_history_table.setItem(row, 2, QTableWidgetItem(str(trade["side"])))
+            self.trade_history_table.setItem(row, 3, QTableWidgetItem(str(trade["price"])))
             self.trade_history_table.setItem(row, 3, QTableWidgetItem(str(trade["leverage"])))
             self.trade_history_table.setItem(row, 4, QTableWidgetItem(f"${trade['balance']:.2f}"))
 
