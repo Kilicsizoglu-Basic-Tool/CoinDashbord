@@ -104,6 +104,8 @@ if [ -d "\$SHARE_DIR" ]; then
     rm -rf "\$SHARE_DIR"/*
     rmdir "\$SHARE_DIR"
 fi
+
+sudo apt-get install python3-venv python3
 EOL
 
 # Yürütme izinleri ayarlayın

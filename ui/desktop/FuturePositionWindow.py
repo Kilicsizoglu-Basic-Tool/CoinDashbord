@@ -133,7 +133,7 @@ class FuturePositionWindow(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.load_chart)
         self.timer.timeout.connect(self.update_price)  # Update price every interval
-        self.timer.start(60 * 1000)  # 15 seconds interval
+        self.timer.start(5 * 1000)  # 15 seconds interval
 
         # Test mode balance
         self.test_balance = 1000.0  # $1000 simulated balance
