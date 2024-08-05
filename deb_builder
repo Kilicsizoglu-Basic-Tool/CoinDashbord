@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Paket bilgileri
-version="5.5-5"
+version="6.5-5"
 pkgname="crypto-dashboard"
 mkdir "deb_build"
 build_dir="./deb_build/${pkgname}_deb_${version}"
