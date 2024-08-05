@@ -5,7 +5,6 @@ import threading
 import libs.binanceKeyRW
 from collections import defaultdict
 
-
 class BinanceConnect:
     def __init__(self):
         try:
@@ -16,20 +15,28 @@ class BinanceConnect:
 
     def _initialize_client(self):
         """Initialize the Binance client with API keys."""
-        # Load API keys from CSV using the custom library
-        api_keys = libs.binanceKeyRW.BinanceAPIKeys()
-        if api_keys.api_key and api_keys.api_secret:
-            print("API keys loaded successfully.")
-            return Client(api_keys.api_key, api_keys.api_secret)
-        else:
-            raise Exception("API keys are not set. Please ensure the CSV file contains valid keys.")
+        try:
+            # Load API keys from CSV using the custom library
+            api_keys = libs.binanceKeyRW.BinanceAPIKeys()
+            if api_keys.api_key and api_keys.api_secret:
+                print("API keys loaded successfully.")
+                return Client(api_keys.api_key, api_keys.api_secret)
+            else:
+                raise Exception("API keys are not set. Please ensure the CSV file contains valid keys.")
+        except Exception as e:
+            print(f"Error initializing client: {e}")
+            raise
 
     def get_balance(self):
-        data = self.client.futures_account_balance()
-        for d in data:
-            if d['asset'] == 'USDT':
-                return float(d['balance'])
-        return 0.0
+        try:
+            data = self.client.futures_account_balance()
+            for d in data:
+                if d['asset'] == 'USDT':
+                    return float(d['balance'])
+            return 0.0
+        except Exception as e:
+            print(f"Error fetching balance: {e}")
+            return 0.0
 
     def open_position(self, symbol, quantity, side, stop_loss=None, take_profit=None):
         """Open a new position with specified parameters."""
@@ -147,7 +154,7 @@ class BinanceConnect:
             return None
 
     def get_24hr_ticker(self):
-        """Fetch 24-hour ticker data for a given symbol."""
+        """Fetch 24-hour ticker data for all symbols."""
         try:
             ticker = self.client.futures_ticker()
             data = {}
@@ -156,6 +163,7 @@ class BinanceConnect:
             return data
         except Exception as e:
             print(f"Error fetching 24-hour ticker: {e}")
+            return {}
 
     def get_price(self, symbol):
         """Fetch the current price for a trading pair."""
@@ -164,7 +172,7 @@ class BinanceConnect:
             return float(price['price'])
         except Exception as e:
             print(f"Error fetching price for {symbol}: {e}")
-            return self.get_price(symbol)
+            return None
 
     def get_all_symbols(self):
         """Fetch all trading pairs that are currently active."""
@@ -177,6 +185,7 @@ class BinanceConnect:
             ]
         except Exception as e:
             print(f"Error fetching trading pairs: {e}")
+            return []
 
     def get_interval_milliseconds(self, interval):
         """Convert interval string to milliseconds."""
@@ -200,9 +209,13 @@ class BinanceConnect:
         return amount * seconds_per_unit[unit] * 1000
 
     def get_binance_server_time(self):
-        # Binance sunucu zamanını al
-        server_time = self.client.get_server_time()['serverTime']
-        return server_time
+        """Fetch the server time from Binance."""
+        try:
+            server_time = self.client.get_server_time()['serverTime']
+            return server_time
+        except Exception as e:
+            print(f"Error fetching Binance server time: {e}")
+            return None
 
     def get_klines_return(self, symbol, interval):
         """Fetch kline data for a given symbol and interval."""
@@ -216,6 +229,8 @@ class BinanceConnect:
 
             # Calculate the end time as the current time
             end_time = self.get_binance_server_time()
+            if not end_time:
+                raise Exception("Failed to get server time.")
 
             # Calculate the start time as 100 intervals before the end time
             interval_milliseconds = self.get_interval_milliseconds(interval)
@@ -328,6 +343,7 @@ class BinanceConnect:
             return top_symbols
         except Exception as e:
             print(f"Error fetching top symbols by volume: {e}")
+            return []
 
     def get_order_book(self, symbol, limit=20):
         """Fetch order book data for a given symbol."""
@@ -338,6 +354,7 @@ class BinanceConnect:
             except Exception as e:
                 print(f"Error fetching order book for {symbol}: {e}")
                 time.sleep(0.1)
+                return None
 
     def analyze_buy_sell_ratio(self, order_book):
         """Analyze the buy-sell ratio from the order book."""
