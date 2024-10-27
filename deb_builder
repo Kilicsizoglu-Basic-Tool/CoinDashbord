@@ -23,9 +23,9 @@ echo "Dosyalar kopyalanıyor..."
 # Dosya ve dizinlerin varlığını kontrol edin ve kopyalayın
 cp -r ./libs ${build_dir}/usr/share/${pkgname}/libs
 cp -r ./ui ${build_dir}/usr/share/${pkgname}/ui
-cp ./coindashboard ${build_dir}/usr/bin/${pkgname}
-cp ./coindashboard_trade ${build_dir}/usr/bin/${pkgname}_trade
-cp ./coindashboard_lock_app ${build_dir}/usr/bin/${pkgname}_lock_app
+cp ./coindashboard ${build_dir}/usr/bin/crypto-dashboard
+cp ./coindashboard_trade ${build_dir}/usr/bin/crypto-dashboard_trade
+cp ./coindashboard_lock_app ${build_dir}/usr/bin/crypto-dashboard_lock_app
 cp ./icon.png ${build_dir}/usr/share/${pkgname}/icon.png
 cp ./icon.ico ${build_dir}/usr/share/${pkgname}/icon.ico
 cp ./app.py ${build_dir}/usr/share/${pkgname}/app.py
@@ -88,6 +88,7 @@ echo "Bağımlılıklar yükleniyor..."
 pip install -r "/usr/share/${pkgname}/requirements.txt"
 
 echo "${pkgname} kurulum bağımlılıkları yüklendi."
+
 EOL
 
 # prerm dosyasını oluşturun (paket kaldırılırken yapılacak işlemler)

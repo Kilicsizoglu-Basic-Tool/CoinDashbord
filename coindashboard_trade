@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Betiğin çalıştığı dizinin yolunu al
-DIR="$(cd "$(dirname "$0")" && pwd)"
-
 # Sanal ortam dizini
-VENV_DIR="$DIR/../share/crypto-dashboard/crypto-dashboard-venv"
+VENV_DIR="/usr/share/crypto-dashboard/crypto-dashboard-venv"
 #VENV_DIR=".coindashboard-venv"
 
 # Sanal ortam mevcut değilse oluştur
@@ -18,21 +15,21 @@ fi
 if source "$VENV_DIR/bin/activate"; then
     echo "Sanal ortam etkinleştirildi."
 else
-    echo "Sanal ortam etkinleştirilemedi." >&2
+    echo "Sanal ortam etkinleştirilemedi!" >&2
     exit 1
 fi
 
 # Gerekli bağımlılıkları yükle
 echo "Bağımlılıklar yükleniyor..."
-if pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"; then
+if pip install -r "/usr/share/crypto-dashboard/requirements.txt"; then
     echo "Bağımlılıklar yüklendi."
 else
-    echo "Bağımlılıklar yüklenemedi." >&2
+    echo "Bağımlılıklar yüklenemedi!" >&2
     exit 1
 fi
 #pip install -r "./requirements.txt"
 
 # Uygulamayı çalıştır
 echo "Uygulama başlatılıyor..."
-python3 "$DIR/../share/crypto-dashboard/trade.py"
+python3 "/usr/share/crypto-dashboard/trade.py"
 #python3 "./app.py"

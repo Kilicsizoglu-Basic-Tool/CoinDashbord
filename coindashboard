@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# Betiğin çalıştığı dizinin yolunu al
-DIR="$(cd "$(dirname "$0")" && pwd)"
-
 # Sanal ortam dizini
-VENV_DIR="$DIR/../share/crypto-dashboard/crypto-dashboard-venv"
+VENV_DIR="/usr/share/crypto-dashboard/crypto-dashboard-venv"
 #VENV_DIR=".coindashboard-venv"
 
 # Sanal ortam mevcut değilse oluştur
@@ -15,22 +12,27 @@ if [ ! -d "$VENV_DIR" ]; then
 fi
 
 # Sanal ortamı etkinleştir
-source "$VENV_DIR/bin/activate"
-
-# Gerekli bağımlılıkları yükle
-if [ -f "./requirements.txt" ]; then
-    echo "Bağımlılıklar yükleniyor..."
-    #pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"
-    pip install -r "./requirements.txt"
+if source "$VENV_DIR/bin/activate"; then
+    echo "Sanal ortam etkinleştirildi."
 else
-    echo "requirements.txt dosyası bulunamadı."
+    echo "Sanal ortam etkinleştirilemedi!" >&2
     exit 1
 fi
 
+# Gerekli bağımlılıkları yükle
+echo "Bağımlılıklar yükleniyor..."
+if pip install -r "/usr/share/crypto-dashboard/requirements.txt"; then
+    echo "Bağımlılıklar yüklendi."
+else
+    echo "Bağımlılıklar yüklenemedi!" >&2
+    exit 1
+fi
+#pip install -r "./requirements.txt"
+
 # Uygulamayı çalıştır
-if [ -f "./app.py" ]; then
+if [ -f "/usr/share/crypto-dashboard/app.py" ]; then
     echo "Uygulama başlatılıyor..."
-    python3 "$DIR/../share/crypto-dashboard/app.py"
+    python3 "/usr/share/crypto-dashboard/app.py"
     #python3 "./app.py"
 else
     echo "app.py dosyası bulunamadı."
