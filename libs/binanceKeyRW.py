@@ -1,7 +1,25 @@
 import csv
 
 class BinanceAPIKeys:
-    def __init__(self, csv_file_path='.coindashbord_config/.binance_api_keys.csv'):
+    """
+    A class to handle reading and writing Binance API keys from/to a CSV file.
+
+    Attributes:
+        csv_file_path (str): The path to the CSV file containing the API keys.
+        api_key (str): The Binance API key.
+        api_secret (str): The Binance API secret key.
+
+    Methods:
+        __init__(csv_file_path='.coindashboard_config/.binance_api_keys.csv'):
+            Initializes the BinanceAPIKeys instance with the given CSV file path and reads the keys.
+        
+        read_keys():
+            Reads the API keys from the CSV file and sets the api_key and api_secret attributes.
+        
+        write_keys(api_key, api_secret):
+            Writes the given API keys to the CSV file and updates the api_key and api_secret attributes.
+    """
+    def __init__(self, csv_file_path='.coindashboard_config/.binance_api_keys.csv'):
         self.csv_file_path = csv_file_path
         self.api_key = None
         self.api_secret = None

@@ -17,6 +17,58 @@ from ui.desktop.TopNegativeCoinWindow import TopNegativeCoinWindow
 from ui.desktop.PriceAlertWindow import PriceAlertWindow
 
 class MainWindow(QMainWindow):
+    """
+    MainWindow class for the Crypto Dashboard application.
+
+    This class represents the main window of the Crypto Dashboard application, which provides various functionalities
+    related to cryptocurrency monitoring and analysis. It inherits from QMainWindow and sets up the main user interface
+    with buttons and labels for different features.
+
+    Attributes:
+        key_status_text (QLabel): Label to display the key status.
+        timer (QTimer): Timer to periodically check the lock status.
+        price_alarm_button (QPushButton): Button to open the Price Alarm window.
+        daily_change_button (QPushButton): Button to open the 24h Change window.
+        top_positive_coins_button (QPushButton): Button to open the Top Positive Coins window.
+        top_negative_coins_button (QPushButton): Button to open the Top Negative Coins window.
+        future_position_button (QPushButton): Button to open the Future Position window.
+        key_status_button (QPushButton): Button to open the Key Status window.
+        coin_status_button (QPushButton): Button to open the Average Percentage Change of Coins window.
+        negative_coin_button (QPushButton): Button to open the Negative Coin window.
+        coin_change_analysis_button (QPushButton): Button to open the Coin Change Analysis window.
+        positive_coin_button (QPushButton): Button to open the Positive Coin window.
+        volume_position_button (QPushButton): Button to open the Volume Position window.
+        coin_explorer_button (QPushButton): Button to open the Coin Explorer window.
+        key_status_window (list): List to store instances of the Key Status window.
+        future_position_window (list): List to store instances of the Future Position window.
+        coin_status_window (list): List to store instances of the Coin Status window.
+        negative_coin_window (list): List to store instances of the Negative Coin window.
+        coin_explorer_window (list): List to store instances of the Coin Explorer window.
+        open_coin_change_analysis_window (list): List to store instances of the Coin Change Analysis window.
+        positive_coin_window (list): List to store instances of the Positive Coin window.
+        top_positive_coins_window (list): List to store instances of the Top Positive Coins window.
+        top_negative_coins_window (list): List to store instances of the Top Negative Coins window.
+        volume_position_window (list): List to store instances of the Volume Position window.
+        coin_24h_change_window (list): List to store instances of the 24h Change window.
+        price_alarm_window (list): List to store instances of the Price Alarm window.
+
+    Methods:
+        __init__(): Initializes the main window and sets up the user interface.
+        lock_status(): Checks the lock status of Binance and TAAPI connections and updates the window title.
+        is_key_file(): Checks if the API key file exists and enables/disables buttons accordingly.
+        open_price_alarm_window(): Opens the Price Alarm window.
+        open_top_positive_coins_window(): Opens the Top Positive Coins window.
+        open_top_negative_coins_window(): Opens the Top Negative Coins window.
+        open_future_position_window(): Opens the Future Position window.
+        open_24h_change_window(): Opens the 24h Change window.
+        open_coin_explorer_window(): Opens the Coin Explorer window.
+        open_key_status_window(): Opens the Key Status window.
+        open_coin_status_window(): Opens the Average Percentage Change of Coins window.
+        open_negative_coin_window(): Opens the Negative Coin window.
+        open_coin_change_analysis_window(): Opens the Coin Change Analysis window.
+        open_positive_coin_window(): Opens the Positive Coin window.
+        open_volume_position_window(): Opens the Volume Position window.
+    """
     def __init__(self):
         super().__init__()
 
@@ -106,9 +158,9 @@ class MainWindow(QMainWindow):
     def lock_status(self):
         binanceLock = libs.binanceConnectionLock.BinanceFileLock()
         block = binanceLock.is_locked()
-        taapiLock = libs.taapiConnectionLock.TAAPIFileLock()
-        tlock = taapiLock.is_locked()
-        self.setWindowTitle("Crypto Dashboard - Binance: " + str(block) + " Taapi: " + str(tlock))
+        taapiLock = libs.taapiConnectionLock.TAAPILock()
+        tLock = taapiLock.is_locked()
+        self.setWindowTitle("Crypto Dashboard - Binance: " + str(block) + " TAAPI: " + str(tLock))
 
     # Functions to open new windows
     def is_key_file(self):
@@ -197,7 +249,7 @@ class MainWindow(QMainWindow):
                 window.show()
 
     def open_coin_change_analysis_window(self):
-        self.open_coin_change_analysis_window.append(CoinChangeAnalyisWindow())
+        self.open_coin_change_analysis_window.append(CoinChangeAnalysisWindow())
         for window in self.open_coin_change_analysis_window:
             if not window.isVisible():
                 window.show()

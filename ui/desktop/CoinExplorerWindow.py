@@ -1,7 +1,5 @@
-import sys
-import numpy as np
 import pandas as pd
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QComboBox, QLabel, QLineEdit, QCompleter
+from PyQt6.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QComboBox, QLabel, QLineEdit, QCompleter
 from PyQt6.QtCore import QTimer, QStringListModel
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -9,6 +7,32 @@ import libs.binanceConnect
 import libs.binanceConnectionLock
 
 class CoinExplorerWindow(QMainWindow):
+    """
+    CoinExplorerWindow is a QMainWindow subclass that provides a graphical interface for exploring cryptocurrency data.
+
+    Attributes:
+        figure (Figure): Matplotlib figure for plotting.
+        canvas (FigureCanvas): Canvas for rendering the Matplotlib figure.
+        ax (Axes): Axes object for plotting.
+        start_button (QPushButton): Button to start fetching data.
+        stop_button (QPushButton): Button to stop fetching data.
+        time_interval_combo (QComboBox): ComboBox for selecting time intervals.
+        label (QLabel): Label for the time interval selection.
+        coin_input (QLineEdit): LineEdit for coin selection with QCompleter.
+        coin_completer (QCompleter): Completer for coin input.
+        kline_timer (QTimer): Timer for updating kline data.
+        plotting_active (bool): Flag indicating if plotting is active.
+        bc (BinanceConnect): Binance client for fetching data.
+        kline_data (dict): Storage for kline data.
+
+    Methods:
+        __init__(): Initializes the CoinExplorerWindow.
+        populate_coin_list(): Populates the coin input with available trading symbols.
+        start_fetching(): Starts the timers for data fetching.
+        stop_fetching(): Stops the data fetching timers.
+        update_kline_data(): Updates kline data for the selected symbol and triggers the plot update.
+        update_kline_plot(symbol, kline_data): Updates the plot with kline data.
+    """
     def __init__(self):
         super().__init__()
 

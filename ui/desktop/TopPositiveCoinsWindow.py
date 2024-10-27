@@ -1,7 +1,5 @@
-import sys
-
 import pandas as pd
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
 from PyQt6.QtCore import QTimer
 import libs.binanceConnect as binanceConnect
 import libs.binanceConnectionLock
@@ -50,15 +48,15 @@ class TopPositiveCoinWindow(QWidget):
 
                 kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
 
-                # En yüksek coini bul
-                highest_coin, highest_price = self.find_highest_coin(kline_data)
-                if highest_coin:
+                kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
+
+                # Find the highest coin
                     message = f"Highest Coin: {highest_coin} with price: {highest_price}"
                     self.coin_list_widget.addItem(message)
 
                     # Twilio ile SMS gönder
                     self.twilio.sendSMS(message)
-
+                    # Send SMS with Twilio
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
@@ -76,7 +74,7 @@ class TopPositiveCoinWindow(QWidget):
                     # Convert the 'close' column to float
                     closing_prices = data['close'].astype(float).tolist()
 
-                    # Calculate the average of the top 10 closing prices
+                    closing_prices = data['close'].astype(float).tolist()
                     top_10_closing_prices = sorted(closing_prices, reverse=True)[:10]
                     average_top_10 = sum(top_10_closing_prices) / len(top_10_closing_prices)
 

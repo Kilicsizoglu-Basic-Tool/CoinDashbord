@@ -1,7 +1,5 @@
-import sys
-
 import pandas as pd
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QListWidget, QMessageBox
 from PyQt6.QtCore import QTimer
 import libs.binanceConnect as binanceConnect
 import libs.binanceConnectionLock
@@ -9,6 +7,23 @@ import libs.binanceConnectionLock
 
 class TopNegativeCoinWindow(QWidget):
     def __init__(self):
+        """
+        Initializes the TopNegativeCoinWindow class.
+
+        This constructor sets up the main window for the Crypto Tracker application
+        with a title, geometry, and layout. It includes a label, a combo box for 
+        selecting time intervals, a button to fetch data, and a list widget to 
+        display the coins. It also initializes a Binance connection and a timer.
+
+        Attributes:
+            layout (QVBoxLayout): The main layout of the window.
+            label (QLabel): A label prompting the user to select a time interval.
+            time_interval_combo (QComboBox): A combo box for selecting time intervals.
+            fetch_button (QPushButton): A button to fetch data based on the selected time interval.
+            coin_list_widget (QListWidget): A list widget to display the coins with negative trends.
+            binance (binanceConnect.BinanceConnect): An instance of the BinanceConnect class for API interaction.
+            timer (QTimer): A timer to handle periodic updates.
+        """
         super().__init__()
         self.setWindowTitle('Crypto Tracker - Negative Trend')
         self.setGeometry(100, 100, 600, 400)
@@ -50,16 +65,16 @@ class TopNegativeCoinWindow(QWidget):
 
                 kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
 
-                # En düşük coini bul
+                kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
+
+                # Find the lowest coin
                 lowest_coin, lowest_price = self.find_lowest_coin(kline_data)
                 if lowest_coin:
                     message = f"Lowest Coin: {lowest_coin} with price: {lowest_price}"
                     self.coin_list_widget.addItem(message)
 
-                    # Twilio ile SMS gönder
+                    # Send SMS with Twilio
                     self.twilio.sendSMS(message)
-
-        except Exception as e:
             print(f"An error occurred: {str(e)}")
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")
 
@@ -75,8 +90,8 @@ class TopNegativeCoinWindow(QWidget):
                 try:
                     # Extract the closing prices from the last 100 klines
                     closing_prices = data['close'].astype(float).tolist()[-100:]
-
-                    # Calculate the average of the 10 lowest closing prices
+                    # Extract the closing prices from the last 100 candlesticks
+                    closing_prices = data['close'].astype(float).tolist()[-100:]
                     bottom_10_closing_prices = sorted(closing_prices)[:10]
                     average_bottom_10 = sum(bottom_10_closing_prices) / len(bottom_10_closing_prices)
 

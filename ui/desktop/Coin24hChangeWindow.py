@@ -1,9 +1,22 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget
 from PyQt6.QtCore import QTimer
 from libs.binanceConnect import BinanceConnect
 
 class Coin24hChangeWindow(QMainWindow):
+    """
+    A window that displays the top 10 gainers and losers in the last 24 hours from Binance.
+    Attributes:
+        client (BinanceConnect): The Binance API client for fetching ticker data.
+        central_widget (QWidget): The central widget of the main window.
+        layout (QVBoxLayout): The layout manager for the central widget.
+        gainers_table (QTableWidget): The table widget displaying the top 10 gainers.
+        losers_table (QTableWidget): The table widget displaying the top 10 losers.
+        timer (QTimer): The timer for periodically updating the data.
+    Methods:
+        __init__(): Initializes the Coin24hChangeWindow.
+        load_data(): Fetches and processes the 24-hour ticker data from Binance.
+        update_table(table, data, raw_data): Updates the given table with the provided data.
+    """
     def __init__(self):
         super().__init__()
 

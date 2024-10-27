@@ -54,11 +54,3 @@ class BinanceFileLock:
         """Context manager exit: release the lock."""
         self.release()
 
-# Example usage:
-if __name__ == "__main__":
-    try:
-        with BinanceFileLock() as lock:
-            print("Do some work with the lock acquired.")
-            time.sleep(5)  # Simulate some work
-    except TimeoutError as e:
-        print(e)

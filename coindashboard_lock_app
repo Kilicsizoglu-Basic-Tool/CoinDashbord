@@ -15,11 +15,21 @@ if [ ! -d "$VENV_DIR" ]; then
 fi
 
 # Sanal ortamı etkinleştir
-source "$VENV_DIR/bin/activate"
+if source "$VENV_DIR/bin/activate"; then
+    echo "Sanal ortam etkinleştirildi."
+else
+    echo "Sanal ortam etkinleştirilemedi!" >&2
+    exit 1
+fi
 
 # Gerekli bağımlılıkları yükle
 echo "Bağımlılıklar yükleniyor..."
-pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"
+if pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"; then
+    echo "Bağımlılıklar yüklendi."
+else
+    echo "Bağımlılıklar yüklenemedi!" >&2
+    exit 1
+fi
 #pip install -r "./requirements.txt"
 
 # Uygulamayı çalıştır

@@ -18,11 +18,21 @@ fi
 source "$VENV_DIR/bin/activate"
 
 # Gerekli bağımlılıkları yükle
-echo "Bağımlılıklar yükleniyor..."
-#pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"
-pip install -r "./requirements.txt"
+if [ -f "./requirements.txt" ]; then
+    echo "Bağımlılıklar yükleniyor..."
+    #pip install -r "$DIR/../share/crypto-dashboard/requirements.txt"
+    pip install -r "./requirements.txt"
+else
+    echo "requirements.txt dosyası bulunamadı."
+    exit 1
+fi
 
 # Uygulamayı çalıştır
-echo "Uygulama başlatılıyor..."
-#python3 "$DIR/../share/crypto-dashboard/app.py"
-python3 "./app.py"
+if [ -f "./app.py" ]; then
+    echo "Uygulama başlatılıyor..."
+    #python3 "$DIR/../share/crypto-dashboard/app.py"
+    python3 "./app.py"
+else
+    echo "app.py dosyası bulunamadı."
+    exit 1
+fi

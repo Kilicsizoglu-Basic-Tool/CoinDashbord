@@ -1,16 +1,30 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QListWidget, QComboBox, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton
 from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import libs.binanceConnect  # Ensure this module is implemented for Binance API
 import libs.binanceConnectionLock  # Ensure this module is correctly implemented for Binance API
 
 
-class CoinChangeAnalyisWindow(QWidget):
+class CoinChangeAnalysisWindow(QWidget):
+    """
+    CoinChangeAnalysisWindow is a QWidget that provides a graphical interface for analyzing coin changes over different time intervals.
+
+    Attributes:
+        time_interval_label (QLabel): Label for the time interval selection.
+        time_interval_combo (QComboBox): ComboBox for selecting the time interval.
+        fetch_button (QPushButton): Button to fetch and display negative coins.
+        figure (Figure): Matplotlib figure for plotting.
+        canvas (FigureCanvas): Canvas for displaying the Matplotlib figure.
+        timer (QTimer): Timer for periodic fetching and displaying of negative coins.
+
+    Methods:
+        __init__(): Initializes the CoinChangeAnalysisWindow.
+        fetch_and_display_negative_coins(): Fetches and displays negative coins based on the selected time interval.
+        calculate_average_changes(data): Calculates average percentage changes for each coin.
+        plot_pie_charts(positive_changes, negative_changes): Plots pie charts for positive and negative changes.
+    """
     def __init__(self):
         super().__init__()
 
@@ -36,7 +50,7 @@ class CoinChangeAnalyisWindow(QWidget):
         self.figure = Figure(figsize=(10, 6))
         self.canvas = FigureCanvas(self.figure)
 
-        # Add widgets to layout
+        self.figure = Figure(figsize=(10, 6))
         layout.addWidget(self.time_interval_label)
         layout.addWidget(self.time_interval_combo)
         layout.addWidget(self.fetch_button)
@@ -68,8 +82,8 @@ class CoinChangeAnalyisWindow(QWidget):
                 # Fetch klines for each symbol
                 kline_data = bc.fetch_klines_for_symbols(symbols, interval)
 
-                # Calculate average changes
-                avg_changes = self.calculate_average_changes(kline_data)
+                # Fetch Klines for each symbol
+                kline_data = bc.fetch_klines_for_symbols(symbols, interval)
                 negative_coins = {k: v for k, v in avg_changes.items() if v < 0}
                 positive_coins = {k: v for k, v in avg_changes.items() if v >= 0}
 
@@ -103,7 +117,7 @@ class CoinChangeAnalyisWindow(QWidget):
         ax1.pie([num_positive, num_negative], labels=['Positive', 'Negative'], autopct='%1.1f%%', startangle=140)
         ax1.set_title('Positive vs Negative Coins')
 
-        # Second Pie Chart: Average Positive vs Negative Changes
+        ax1.pie([num_positive, num_negative], labels=['Positive', 'Negative'], autopct='%1.1f%%', startangle=140)
         if positive_changes or negative_changes:
             ax2 = self.figure.add_subplot(122)
             avg_positive_change = np.mean(list(positive_changes.values())) if positive_changes else 0

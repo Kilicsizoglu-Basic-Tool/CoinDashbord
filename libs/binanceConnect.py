@@ -6,6 +6,79 @@ import libs.binanceKeyRW
 from collections import defaultdict
 
 class BinanceConnect:
+    """
+    BinanceConnect class provides methods to interact with the Binance Futures API.
+
+    Methods:
+        __init__():
+            Initialize the BinanceConnect instance and set up the client and semaphore.
+
+        _initialize_client():
+            Initialize the Binance client with API keys.
+
+        get_balance():
+            Retrieve the USDT balance from the futures account.
+
+        open_position(symbol, quantity, side, stop_loss=None, take_profit=None):
+            Open a new position with specified parameters.
+
+        set_stop_loss(symbol, stop_price):
+            Set a stop loss order for a given symbol.
+
+        set_take_profit(symbol, take_profit_price):
+            Set a take profit order for a given symbol.
+
+        close_position(symbol):
+            Close an existing position for a given symbol.
+
+        cancel_order(symbol, order_id):
+            Cancel a specific open order.
+
+        get_open_orders(symbol=None):
+            Get all open orders for a given symbol or all symbols if no symbol is specified.
+
+        is_long(symbol):
+            Check if the position is a long position for a given symbol.
+
+        get_24hr_ticker():
+            Fetch 24-hour ticker data for all symbols.
+
+        get_price(symbol):
+            Fetch the current price for a trading pair.
+
+        get_all_symbols():
+            Fetch all trading pairs that are currently active.
+
+        get_interval_milliseconds(interval):
+            Convert interval string to milliseconds.
+
+        get_binance_server_time():
+            Fetch the server time from Binance.
+
+        get_klines_return(symbol, interval):
+            Fetch kline data for a given symbol and interval, returning the result.
+
+        get_klines(symbol, interval, results):
+            Fetch kline data for a given symbol and interval, storing the result in a provided dictionary.
+
+        fetch_klines_for_symbols(symbols, interval):
+            Fetch klines for multiple symbols concurrently, respecting API limits.
+
+        get_top_symbols_by_volume(limit=10):
+            Retrieve the top trading pairs by volume.
+
+        get_order_book(symbol, limit=20):
+            Fetch order book data for a given symbol.
+
+        analyze_buy_sell_ratio(order_book):
+            Analyze the buy-sell ratio from the order book.
+
+        fetch_buy_sell_data_for_symbols(symbols):
+            Fetch buy-sell data for multiple symbols concurrently.
+
+        fetch_buy_sell_data(symbol, results):
+            Fetch buy-sell data for a single symbol, storing the result in a provided dictionary.
+    """
     def __init__(self):
         try:
             self.client = self._initialize_client()
@@ -18,6 +91,7 @@ class BinanceConnect:
         try:
             # Load API keys from CSV using the custom library
             api_keys = libs.binanceKeyRW.BinanceAPIKeys()
+            api_keys.load_keys()  # Ensure keys are loaded from the CSV
             if api_keys.api_key and api_keys.api_secret:
                 print("API keys loaded successfully.")
                 return Client(api_keys.api_key, api_keys.api_secret)
@@ -28,6 +102,17 @@ class BinanceConnect:
             raise
 
     def get_balance(self):
+        """
+        Retrieves the USDT balance from the futures account.
+
+        This method fetches the account balance data from the Binance futures account
+        and searches for the balance associated with the 'USDT' asset. If found, it 
+        returns the balance as a float. If the 'USDT' asset is not found or an error 
+        occurs during the fetch, it returns 0.0.
+
+        Returns:
+            float: The USDT balance if found, otherwise 0.0.
+        """
         try:
             data = self.client.futures_account_balance()
             for d in data:
@@ -51,9 +136,9 @@ class BinanceConnect:
 
             # Set stop loss and take profit if provided
             if stop_loss:
-                self.set_stop_loss(symbol, order['orderId'], stop_loss)
+                self.set_stop_loss(symbol, stop_loss)
             if take_profit:
-                self.set_take_profit(symbol, order['orderId'], take_profit)
+                self.set_take_profit(symbol, take_profit)
 
             print(f"Opened {side} position for {symbol}, Quantity: {quantity}")
             return order
@@ -61,7 +146,7 @@ class BinanceConnect:
             print(f"Error opening position for {symbol}: {e}")
             return None
 
-    def set_stop_loss(self, symbol, order_id, stop_price):
+    def set_stop_loss(self, symbol, stop_price):
         """Set a stop loss order."""
         try:
             stop_loss_order = self.client.futures_create_order(
@@ -77,7 +162,7 @@ class BinanceConnect:
             print(f"Error setting stop loss for {symbol}: {e}")
             return None
 
-    def set_take_profit(self, symbol, order_id, take_profit_price):
+    def set_take_profit(self, symbol, take_profit_price):
         """Set a take profit order."""
         try:
             take_profit_order = self.client.futures_create_order(

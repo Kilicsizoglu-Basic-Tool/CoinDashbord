@@ -1,17 +1,74 @@
-import sys
 import pandas as pd
 from PyQt6.QtWidgets import (
-    QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel,
+    QMainWindow, QWidget, QVBoxLayout, QLabel,
     QLineEdit, QPushButton, QHBoxLayout, QFormLayout, QGroupBox, QComboBox, QListWidget, QMessageBox, QCheckBox,
     QSpinBox, QTableWidget, QTableWidgetItem, QCompleter
 )
-from PyQt6.QtCore import Qt, QTimer, QStringListModel
+from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from libs.binanceConnect import BinanceConnect  # Ensure this module is implemented for Binance API
 
 
 class FuturePositionWindow(QMainWindow):
+    """
+    FuturePositionWindow is a QMainWindow subclass that provides a graphical user interface for a crypto trading application.
+    It allows users to view real-time price charts, manage trading positions, and simulate trades in test mode.
+
+    Attributes:
+        selected_symbol (str): The currently selected trading symbol.
+        selected_interval (str): The currently selected time interval for the chart.
+        bc (BinanceConnect): An instance of BinanceConnect for interacting with the Binance API.
+        current_price (float): The current price of the selected symbol.
+        main_widget (QWidget): The main widget of the window.
+        layout (QVBoxLayout): The main layout of the window.
+        canvas (FigureCanvas): The Matplotlib canvas for displaying the chart.
+        ax (Axes): The Matplotlib axes for the chart.
+        control_group (QGroupBox): The group box for control inputs.
+        control_layout (QFormLayout): The layout for control inputs.
+        symbol_input (QLineEdit): The input field for the trading symbol.
+        interval_input (QLineEdit): The input field for the time interval.
+        symbols (list): A list of available trading symbols.
+        symbol_completer (QCompleter): The completer for the symbol input field.
+        stop_loss_input (QLineEdit): The input field for the stop loss value.
+        take_profit_input (QLineEdit): The input field for the take profit value.
+        test_mode_checkbox (QCheckBox): The checkbox for enabling test mode.
+        balance_label (QLabel): The label for displaying the current balance.
+        position_group (QGroupBox): The group box for position controls.
+        position_layout (QFormLayout): The layout for position controls.
+        quantity_input (QLineEdit): The input field for the quantity of the position.
+        side_input (QComboBox): The combo box for selecting the side (BUY/SELL) of the position.
+        leverage_input (QSpinBox): The input field for selecting the leverage.
+        position_button_layout (QHBoxLayout): The layout for position management buttons.
+        open_position_button (QPushButton): The button for opening a new position.
+        close_position_button (QPushButton): The button for closing an open position.
+        order_group (QGroupBox): The group box for order management.
+        order_layout (QVBoxLayout): The layout for order management.
+        open_orders_list (QListWidget): The list widget for displaying open orders.
+        refresh_orders_button (QPushButton): The button for refreshing open orders.
+        cancel_order_button (QPushButton): The button for canceling the selected order.
+        timer (QTimer): The timer for updating the chart and price.
+        test_balance (float): The simulated balance for test mode.
+        test_trades (list): The list of simulated trades.
+        real_trades (list): The list of real trades.
+        trade_history_table (QTableWidget): The table for displaying trade history.
+        save_trades_button (QPushButton): The button for saving trade data.
+
+    Methods:
+        load_chart(): Load and display the chart based on the selected symbol and interval.
+        update_price(): Update the current price for the symbol.
+        open_position(): Open a new trading position.
+        simulate_trade(symbol, quantity, side, leverage, stop_loss, take_profit): Simulate trading with a test balance.
+        check_stop_loss_take_profit(current_price, side, stop_loss, take_profit, quantity): Adjust balance based on stop loss and take profit.
+        record_test_trade(symbol, quantity, price, side, leverage, balance): Store the trade details in the list.
+        update_trade_history_table(): Update the trade history table with the latest trade data.
+        save_trade_data(): Save the current trades to a CSV file.
+        close_position(): Close an open trading position.
+        simulate_close_position(symbol): Simulate closing a position in test mode.
+        refresh_open_orders(): Refresh the list of open orders.
+        cancel_selected_order(): Cancel the selected order from the open orders list.
+        update_balance_display(): Update the balance display based on mode.
+    """
     def __init__(self):
         super().__init__()
 
@@ -55,7 +112,7 @@ class FuturePositionWindow(QMainWindow):
         self.symbol_input.setCompleter(self.symbol_completer)
 
         self.symbol_input.setText("BTCUSDT")  # Default value for symbol input
-
+        self.symbol_input.setText("BTCUSDT")  # Default value for symbol input
         # Input fields for stop loss and take profit
         self.stop_loss_input = QLineEdit()
         self.take_profit_input = QLineEdit()
@@ -178,14 +235,14 @@ class FuturePositionWindow(QMainWindow):
 
             # Fetch kline data using BinanceConnect
             klines = self.bc.fetch_klines_for_symbols([symbol], interval)
-            df = klines.get(symbol)
-            if df is not None:
+            kline_data = self.bc.fetch_klines_for_symbols([symbol], interval)
+            df = kline_data.get(symbol)
                 # Plot the chart
                 self.ax.clear()
                 self.ax.plot(df['open_time'], df['close'], label="Closing Price")
                 self.ax.set_title(f"{symbol} - {interval} Chart")
                 self.ax.set_xlabel("Date")
-                self.ax.set_ylabel("Price (USDT)")
+                self.ax.set_xlabel("Date")
                 self.ax.legend()
                 self.canvas.draw()
         except Exception as e:

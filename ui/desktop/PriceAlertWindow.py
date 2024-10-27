@@ -1,6 +1,4 @@
-import sys
 from PyQt6.QtWidgets import (
-    QApplication,
     QWidget,
     QVBoxLayout,
     QLabel,
@@ -13,12 +11,38 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QCompleter
 )
-from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtCore import QTimer
 from libs.binanceConnect import BinanceConnect
 #from libs.twilioConnect import twilioConnect
 
 
 class PriceAlertWindow(QWidget):
+    """
+    PriceAlertWindow is a QWidget that allows users to set price alerts for various cryptocurrencies.
+
+    Attributes:
+        layout (QVBoxLayout): The main layout of the window.
+        label (QLabel): Label for the coin selection input.
+        coin_input (QLineEdit): Input field for entering the coin symbol.
+        binance (BinanceConnect): Instance of BinanceConnect to interact with Binance API.
+        symbols (list): List of all available coin symbols from Binance.
+        completer (QCompleter): Completer for auto-completing coin symbols.
+        price_label (QLabel): Label for the price alert input.
+        price_input (QLineEdit): Input field for entering the price.
+        condition_group (QGroupBox): Group box for condition radio buttons.
+        condition_layout (QHBoxLayout): Layout for condition radio buttons.
+        greater_than_radio (QRadioButton): Radio button for "Greater Than" condition.
+        less_than_radio (QRadioButton): Radio button for "Less Than" condition.
+        add_alert_button (QPushButton): Button to add a new price alert.
+        alert_list_widget (QListWidget): List widget to display active alerts.
+        alerts (list): List to store active alerts.
+        timer (QTimer): Timer to periodically check alerts.
+
+    Methods:
+        __init__(): Initializes the PriceAlertWindow and sets up the UI components.
+        add_alert(): Adds a new price alert based on user input.
+        check_alerts(): Checks the current prices against the set alerts and triggers them if conditions are met.
+    """
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Crypto Price Alerts')
@@ -33,7 +57,7 @@ class PriceAlertWindow(QWidget):
         self.coin_input = QLineEdit()
         self.coin_input.setPlaceholderText("Enter coin symbol (e.g., BTCUSDT)")
         self.layout.addWidget(self.coin_input)
-
+        self.coin_input.setPlaceholderText("Enter coin symbol (e.g., BTCUSDT)")  # BTCUSDT is a valid coin symbol
         # Initialize the BinanceConnect and get all symbols
         self.binance = BinanceConnect()
         #self.twilio = twilioConnect()

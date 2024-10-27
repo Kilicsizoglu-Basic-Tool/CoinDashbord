@@ -1,16 +1,28 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox
 from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 import libs.binanceConnect  # Make sure you have this module for Binance API
 import libs.binanceConnectionLock  # Ensure this module is correctly implemented for Binance API
 
 
 class CoinStatusWindow(QWidget):
+    """
+    CoinStatusWindow is a QWidget that provides a graphical interface for displaying the average percentage change of various cryptocurrency coins over selected time intervals.
+    Attributes:
+        time_interval_label (QLabel): Label for the time interval selection combo box.
+        time_interval_combo (QComboBox): Combo box for selecting the time interval for fetching data.
+        fetch_button (QPushButton): Button to trigger data fetching and plotting.
+        figure (Figure): Matplotlib figure for plotting data.
+        canvas (FigureCanvas): Canvas widget to display the Matplotlib figure.
+        timer (QTimer): Timer to periodically fetch and plot data.
+    Methods:
+        __init__(): Initializes the CoinStatusWindow, sets up the UI components and layout.
+        fetch_and_plot_data(): Fetches data from Binance, calculates average percentage changes, and plots the results.
+        calculate_average_changes(data): Calculates the average percentage change for each coin based on the fetched data.
+        plot_scatter_chart(avg_changes): Plots a scatter chart of the average percentage changes of the coins.
+    """
     def __init__(self):
         super().__init__()
 

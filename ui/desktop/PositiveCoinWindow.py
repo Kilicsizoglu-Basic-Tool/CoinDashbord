@@ -1,19 +1,35 @@
-import time
-import sys
-from tokenize import String
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QListWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QListWidget
 from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import pandas as pd
 import libs.binanceConnect  # Custom module for Binance API connection
 import libs.binanceConnectionLock  # Ensure this module is correctly implemented for Binance API
-import libs.taapiConnect  # Custom module for TAAPI API connection
-import libs.taapiConnectionLock
 import libs.twilioConnect  # Custom module for Twilio API connection
 
 
 class PositiveCoinWindow(QWidget):
+    """
+    PositiveCoinWindow is a QWidget subclass that provides a graphical interface for displaying coins with positive changes.
+    Attributes:
+        taapikey (str): API key for technical analysis.
+        exchange (str): The exchange platform, default is 'binance'.
+        interval (str): Time interval for fetching data.
+        label (QLabel): Label for the window title.
+        time_interval_label (QLabel): Label for the time interval selection.
+        time_interval_combo (QComboBox): ComboBox for selecting time intervals.
+        fetch_button (QPushButton): Button to fetch and display positive coins.
+        figure (Figure): Matplotlib figure for the pie chart.
+        canvas (FigureCanvas): Canvas for displaying the pie chart.
+        coin_list_widget (QListWidget): List widget for displaying coins with potential.
+        timer (QTimer): Timer for periodic fetching of data.
+        binance (BinanceConnect): Instance of BinanceConnect for interacting with Binance API.
+    Methods:
+        __init__(): Initializes the PositiveCoinWindow and sets up the UI components.
+        fetch_and_display_positive_coins(): Fetches and displays coins with positive changes.
+        calculate_positive_changes(data): Calculates average percentage changes for each coin and finds positive ones.
+        plot_positive_changes_pie_chart(positive_coins): Plots a pie chart of the positive changes.
+        fetch_and_display_potential_coins(positive_coins): Fetches RSI and StochRSI for coins with potential continuous growth and displays them.
+    """
     def __init__(self):
         super().__init__()
 
@@ -23,7 +39,7 @@ class PositiveCoinWindow(QWidget):
 
         # Set up window properties
         self.setWindowTitle("Positive Coin")
-        self.setGeometry(150, 150, 800, 600)  # Adjusted size for pie chart
+        self.taapikey = ''
         self.binance = libs.binanceConnect.BinanceConnect()
         # Create layout and widgets
         layout = QVBoxLayout(self)
@@ -93,7 +109,7 @@ class PositiveCoinWindow(QWidget):
         except Exception as e:
             print(f"Failed to acquire lock: {e}")
 
-        lock.release()
+                # Fetch and display RSI/Stochastic RSI for potential coins
 
     def calculate_positive_changes(self, data):
         """Calculate average percentage changes for each coin and find positive ones."""
@@ -135,7 +151,7 @@ class PositiveCoinWindow(QWidget):
 
         twilio = libs.twilioConnect.twilioConnect()
 
-        # Send SMS with potential coins
+        """Fetch RSI and Stochastic RSI for coins with potential continuous growth."""
         message = "Positive Coins with potential recovery:\n"
             
         i = 0
@@ -149,7 +165,8 @@ class PositiveCoinWindow(QWidget):
             for c in list_coin:
                 if c["symbol"] == coin:
                     temp_change = float(c["priceChangePercent"])
-            message += f"{coin}: 24h:{temp_change}\n"
+        potential_coins = self.calculate_potential_coins(positive_coins)
+        for coin, rsi, k, d in potential_coins:
             self.coin_list_widget.addItem(f"{coin}: 24h:{temp_change}")
             
         if i != 0:   

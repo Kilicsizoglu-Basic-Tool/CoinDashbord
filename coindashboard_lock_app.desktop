@@ -1,7 +1,7 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
-Name=coindashboard lock app
+Name=coin dashboard lock app
 Comment=A simple application to display negative coin changes.
 Exec=bash -c crypto-dashboard_lock_app
 Icon=/usr/share/crypto-dashboard/icon.png

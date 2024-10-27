@@ -1,5 +1,4 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox
 from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -8,6 +7,23 @@ import libs.binanceConnect  # Ensure this module is correctly implemented for Bi
 import libs.binanceConnectionLock  # Ensure this module is correctly implemented for Binance API
 
 class VolumePositionWindow(QWidget):
+    """
+    VolumePositionWindow is a QWidget subclass that provides a graphical interface for displaying the top volume coins
+    in a pie chart format. It allows users to select a time interval and fetch volume data from Binance.
+    Attributes:
+        label (QLabel): Label displaying "Top Volume Coins".
+        time_interval_label (QLabel): Label prompting the user to select a time interval.
+        time_interval_combo (QComboBox): ComboBox for selecting the time interval.
+        fetch_button (QPushButton): Button to fetch and display volume data.
+        figure (Figure): Matplotlib Figure object for plotting pie charts.
+        canvas (FigureCanvas): Canvas for rendering the Matplotlib Figure.
+        timer (QTimer): Timer for periodically fetching and updating volume data.
+    Methods:
+        __init__(): Initializes the VolumePositionWindow, sets up the UI components, and configures the layout.
+        fetch_and_display_volume_data(): Fetches volume data from Binance, calculates top volumes, and updates the pie charts.
+        calculate_top_volumes(data): Calculates the coins with the highest average volume from the fetched data.
+        plot_volume_pie_charts(volume_data): Plots pie charts for buy, sell, and total volume data.
+    """
     def __init__(self):
         super().__init__()
 
@@ -34,7 +50,7 @@ class VolumePositionWindow(QWidget):
 
         # Matplotlib Figure for Pie Charts
         self.figure = Figure(figsize=(15, 8))
-        self.canvas = FigureCanvas(self.figure)
+        self.figure = Figure(figsize=(15, 8))
 
         # Add widgets to layout
         layout.addWidget(self.label)
@@ -68,7 +84,7 @@ class VolumePositionWindow(QWidget):
                 try:
                     # Fetch kline data for each symbol
                     kline_data = bc.fetch_klines_for_symbols(symbols, interval)
-
+                    kline_data = bc.fetch_klines_for_symbols(symbols, interval)
                     # Calculate top volumes
                     top_volume_coins = self.calculate_top_volumes(kline_data)
 
@@ -124,11 +140,11 @@ class VolumePositionWindow(QWidget):
         # Create subplots for the three pie charts
         ax1 = self.figure.add_subplot(131)
         ax1.pie(volumes_buy, labels=symbols_buy, autopct='%1.1f%%', startangle=140)
-        ax1.set_title('Top Coins by Buy Volume')
+        ax1.pie(volumes_buy, labels=symbols_buy, autopct='%1.1f%%', startangle=140)
 
         ax2 = self.figure.add_subplot(132)
         ax2.pie(volumes_sell, labels=symbols_sell, autopct='%1.1f%%', startangle=140)
-        ax2.set_title('Top Coins by Sell Volume')
+        ax2.pie(volumes_sell, labels=symbols_sell, autopct='%1.1f%%', startangle=140)
 
         ax3 = self.figure.add_subplot(133)
         ax3.pie(volumes_total, labels=symbols_total, autopct='%1.1f%%', startangle=140)

@@ -1,10 +1,7 @@
-import sys
-import time
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QListWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QComboBox, QPushButton, QMessageBox, QListWidget
 from PyQt6.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-import pandas as pd
 import libs.binanceConnect  # Custom module for Binance API connection
 import libs.binanceConnectionLock  # Ensure this module is correctly implemented for Binance API
 import libs.taapiConnect
@@ -13,13 +10,32 @@ import libs.twilioConnect  # Custom module for Twilio API connection
 
 
 class NegativeCoinWindow(QWidget):
+    """
+    NegativeCoinWindow is a QWidget subclass that provides a graphical interface for displaying coins with negative changes over a selected time interval.
+    Attributes:
+        taapikey (str): API key for technical analysis.
+        exchange (str): The exchange platform, default is 'binance'.
+        interval (str): The time interval for fetching data.
+        figure (Figure): Matplotlib figure for plotting pie charts.
+        canvas (FigureCanvas): Canvas for displaying the matplotlib figure.
+        binance (BinanceConnect): Instance of BinanceConnect for interacting with Binance API.
+        coin_list_widget (QListWidget): Widget for displaying the list of coins with potential.
+        timer (QTimer): Timer for periodic fetching and displaying of negative coins.
+    Methods:
+        __init__(): Initializes the NegativeCoinWindow with UI components and layout.
+        fetch_and_display_negative_coins(): Fetches and displays coins with negative changes.
+        calculate_negative_changes(data): Calculates average percentage changes for each coin and identifies negative ones.
+        plot_negative_changes_pie_chart(negative_coins): Plots a pie chart of the negative changes.
+        fetch_and_display_potential_coins(positive_coins): Fetches and displays coins with potential continuous growth.
+        calculate_potential_coins(negative_coins): Calculates potential coins based on negative changes.
+    """
     def __init__(self):
         super().__init__()
         
         self.taapikey = secret=''
         self.exchange = 'binance'
         self.interval = ''
-
+        self.taapikey = ''
         # Set up window properties
         self.setWindowTitle("Negative Coin")
         self.setGeometry(150, 150, 800, 600)  # Adjusted size for pie chart
@@ -89,7 +105,8 @@ class NegativeCoinWindow(QWidget):
                 self.fetch_and_display_potential_coins(negative_coins)
 
         except Exception as e:
-            print(f"An error occurred: {str(e)}")
+                potential_coins = self.calculate_potential_coins(negative_coins)
+                self.fetch_and_display_potential_coins(potential_coins)
 
         lock.release()
 
@@ -131,7 +148,13 @@ class NegativeCoinWindow(QWidget):
     
     def fetch_and_display_potential_coins(self, positive_coins):
         """Fetch RSI and StochRSI for coins with potential continuous growth."""
-        # Sort potential coins by RSI value (descending order)
+    def calculate_potential_coins(self, negative_coins):
+        """Calculate potential coins based on negative changes."""
+        # Placeholder for actual calculation logic
+        potential_coins = [(coin, -change, 0, 0) for coin, change in negative_coins.items()]
+        return potential_coins
+
+    def fetch_and_display_potential_coins(self, potential_coins):
         positive_coins.sort(key=lambda x: x[1], reverse=True)
 
         twilio = libs.twilioConnect.twilioConnect()

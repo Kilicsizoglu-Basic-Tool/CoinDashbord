@@ -1,17 +1,32 @@
-import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
-import csv
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 import libs.binanceKeyRW
 
 class APIKeyWindow(QMainWindow):
-    def __init__(self, selfself):
-        super().__init__()
+    """
+    APIKeyWindow is a QMainWindow subclass that provides a user interface for managing Binance API keys.
+
+    Attributes:
+        api_manager (BinanceAPIKeys): An instance of the BinanceAPIKeys class for reading and writing API keys.
+        api_key_label (QLabel): A label for the API key input field.
+        api_key_input (QLineEdit): An input field for the API key.
+        api_secret_label (QLabel): A label for the API secret input field.
+        api_secret_input (QLineEdit): An input field for the API secret, with password echo mode.
+        save_button (QPushButton): A button to save the API keys.
+
+    Methods:
+        __init__(self, parent=None):
+            Initializes the APIKeyWindow, sets up the UI components, and loads existing API keys if available.
+
+        save_api_keys(self):
+            Saves the API keys entered by the user to a CSV file. Displays a warning if either field is empty,
+            and shows a success or error message based on the outcome of the save operation.
+    """
+    def __init__(self, parent=None):
+        super().__init__(parent)
         self.setWindowTitle("Binance API Key Manager")
         self.setGeometry(100, 100, 400, 200)
 
         self.api_manager = libs.binanceKeyRW.BinanceAPIKeys()
-        
-        self.selfself = selfself
 
         # Main widget and layout
         main_widget = QWidget(self)
@@ -53,5 +68,3 @@ class APIKeyWindow(QMainWindow):
             QMessageBox.information(self, "Success", "API keys have been saved successfully.")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to save API keys: {e}")
-            
-        self.selfself.is_key_file()
