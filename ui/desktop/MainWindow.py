@@ -1,12 +1,11 @@
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import QTimer
 import libs.binanceConnectionLock
-import libs.taapiConnectionLock
 import libs.binanceKeyRW
 from ui.desktop import KeyWindow
 from ui.desktop.CoinStatusWindow import CoinStatusWindow
 from ui.desktop.NegativeCoinWindow import NegativeCoinWindow
-from ui.desktop.CoinChangeAnalyisWindow import CoinChangeAnalyisWindow
+from ui.desktop.CoinChangeAnalyisWindow import CoinChangeAnalysisWindow
 from ui.desktop.PositiveCoinWindow import PositiveCoinWindow
 from ui.desktop.VolumePositionWindow import VolumePositionWindow
 from ui.desktop.CoinExplorerWindow import CoinExplorerWindow
@@ -158,9 +157,7 @@ class MainWindow(QMainWindow):
     def lock_status(self):
         binanceLock = libs.binanceConnectionLock.BinanceFileLock()
         block = binanceLock.is_locked()
-        taapiLock = libs.taapiConnectionLock.TAAPILock()
-        tLock = taapiLock.is_locked()
-        self.setWindowTitle("Crypto Dashboard - Binance: " + str(block) + " TAAPI: " + str(tLock))
+        self.setWindowTitle("Crypto Dashboard - Binance: " + str(block))
 
     # Functions to open new windows
     def is_key_file(self):
@@ -177,7 +174,7 @@ class MainWindow(QMainWindow):
             self.top_positive_coins_button.setEnabled(True)
             self.top_negative_coins_button.setEnabled(True)
             self.price_alarm_button.setEnabled(True)
-            self.key_status_button.setEnabled(False)
+            self.key_status_button.setEnabled(True)
             self.key_status_text.setText("Key Status: Key File Found")
         elif bc.api_key is None:
             self.coin_status_button.setEnabled(False)

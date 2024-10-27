@@ -51,12 +51,9 @@ class TopPositiveCoinWindow(QWidget):
                 kline_data = self.binance.fetch_klines_for_symbols(symbols, interval)
 
                 # Find the highest coin
-                    message = f"Highest Coin: {highest_coin} with price: {highest_price}"
-                    self.coin_list_widget.addItem(message)
-
-                    # Twilio ile SMS gönder
-                    self.twilio.sendSMS(message)
-                    # Send SMS with Twilio
+                message = f"Highest Coin: {highest_coin} with price: {highest_price}"
+                self.coin_list_widget.addItem(message)
+                
         except Exception as e:
             print(f"An error occurred: {str(e)}")
             QMessageBox.critical(self, "Error", f"An error occurred: {str(e)}")

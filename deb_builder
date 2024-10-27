@@ -21,14 +21,20 @@ mkdir -p "${build_dir}/usr/share/applications"
 echo "Dosyalar kopyalanıyor..."
 
 # Dosya ve dizinlerin varlığını kontrol edin ve kopyalayın
-for file in ./libs ./ui ./coindashboard ./coindashboard_trade ./coindashboard_lock_app ./icon.png ./icon.ico ./app.py ./trade.py ./lock_app.py ./requirements.txt ./coindashboard.desktop ./coindashboard_trade.desktop ./coindashboard_lock_app.desktop; do
-    if [ -e "$file" ]; then
-        cp -r "$file" "${build_dir}/usr/share/${pkgname}/$(basename $file)"
-    else
-        echo "Hata: $file bulunamadı."
-        exit 1
-    fi
-done
+cp -r ./libs ${build_dir}/usr/share/${pkgname}/libs
+cp -r ./ui ${build_dir}/usr/share/${pkgname}/ui
+cp ./coindashboard ${build_dir}/usr/bin/${pkgname}
+cp ./coindashboard_trade ${build_dir}/usr/bin/${pkgname}_trade
+cp ./coindashboard_lock_app ${build_dir}/usr/bin/${pkgname}_lock_app
+cp ./icon.png ${build_dir}/usr/share/${pkgname}/icon.png
+cp ./icon.ico ${build_dir}/usr/share/${pkgname}/icon.ico
+cp ./app.py ${build_dir}/usr/share/${pkgname}/app.py
+cp ./trade.py ${build_dir}/usr/share/${pkgname}/trade.py
+cp ./lock_app.py ${build_dir}/usr/share/${pkgname}/lock_app.py
+cp ./requirements.txt ${build_dir}/usr/share/${pkgname}/requirements.txt
+cp ./coindashboard.desktop ${build_dir}/usr/share/applications/${pkgname}.desktop
+cp ./coindashboard_trade.desktop ${build_dir}/usr/share/applications/${pkgname}_trade.desktop
+cp ./coindashboard_lock_app.desktop ${build_dir}/usr/share/applications/${pkgname}_lock_app.desktop
 
 # Binaries
 cp ./coindashboard "${build_dir}/usr/bin/${pkgname}"

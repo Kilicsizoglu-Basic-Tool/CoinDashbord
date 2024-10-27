@@ -4,8 +4,8 @@
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Sanal ortam dizini
-#VENV_DIR="$DIR/../share/crypto-dashboard/crypto-dashboard-venv"
-VENV_DIR=".coindashboard-venv"
+VENV_DIR="$DIR/../share/crypto-dashboard/crypto-dashboard-venv"
+#VENV_DIR=".coindashboard-venv"
 
 # Sanal ortam mevcut değilse oluştur
 if [ ! -d "$VENV_DIR" ]; then
@@ -30,8 +30,8 @@ fi
 # Uygulamayı çalıştır
 if [ -f "./app.py" ]; then
     echo "Uygulama başlatılıyor..."
-    #python3 "$DIR/../share/crypto-dashboard/app.py"
-    python3 "./app.py"
+    python3 "$DIR/../share/crypto-dashboard/app.py"
+    #python3 "./app.py"
 else
     echo "app.py dosyası bulunamadı."
     exit 1

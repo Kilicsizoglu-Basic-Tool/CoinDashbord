@@ -237,14 +237,14 @@ class FuturePositionWindow(QMainWindow):
             klines = self.bc.fetch_klines_for_symbols([symbol], interval)
             kline_data = self.bc.fetch_klines_for_symbols([symbol], interval)
             df = kline_data.get(symbol)
-                # Plot the chart
-                self.ax.clear()
-                self.ax.plot(df['open_time'], df['close'], label="Closing Price")
-                self.ax.set_title(f"{symbol} - {interval} Chart")
-                self.ax.set_xlabel("Date")
-                self.ax.set_xlabel("Date")
-                self.ax.legend()
-                self.canvas.draw()
+            # Plot the chart
+            self.ax.clear()
+            self.ax.plot(df['open_time'], df['close'], label="Closing Price")
+            self.ax.set_title(f"{symbol} - {interval} Chart")
+            self.ax.set_xlabel("Date")
+            self.ax.set_xlabel("Date")
+            self.ax.legend()
+            self.canvas.draw()
         except Exception as e:
             QMessageBox.warning(self, "Error", f"Failed to load chart: {str(e)}")
 

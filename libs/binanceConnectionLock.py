@@ -4,7 +4,7 @@ import time
 class BinanceFileLock:
     def __init__(self):
         # Ensure the directory exists
-        self.lock_file_path = ".coindashbord_config/.binance_connection_lock"
+        self.lock_file_path = ".coindashboard_config/.binance_connection_lock"
         os.makedirs(os.path.dirname(self.lock_file_path), exist_ok=True)
 
     def acquire(self, timeout=None, wait_interval=1):
