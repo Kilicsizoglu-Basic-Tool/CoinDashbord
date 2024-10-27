@@ -13,7 +13,7 @@ depends=("python" "python-virtualenv")
 mkdir "arch_builder"
 cd "arch_builder"
 mkdir "${pkgname}-${pkgver}"
-pkgdir = "./${pkgname}-${pkgver}"
+pkgdir="./${pkgname}-${pkgver}"
 
 # Önceki dosyaları temizle
 echo "Önceki dosyalar temizleniyor..."
@@ -21,7 +21,7 @@ rm -rf src pkg "${pkgname}-${pkgver}.tar.gz" PKGBUILD
 
 # Kaynak dizinini arşivle
 echo "Kaynak dosyaları arşivleniyor..."
-tar -czf "${pkgname}-${pkgver}.tar.gz" libs ui coindashboard coindashboard_lock_app icon.png icon.ico app.py lock_app.py requirements.txt coindashboard.desktop coindashboard_lock_app.desktop
+tar -czf "${pkgname}-${pkgver}.tar.gz" libs ui coindashboard coindashboard_lock_app icon.png icon.ico app.py lock_app.py trade.py requirements.txt coindashboard.desktop coindashboard_lock_app.desktop
 
 # PKGBUILD dosyasını oluştur
 echo "PKGBUILD dosyası oluşturuluyor..."
