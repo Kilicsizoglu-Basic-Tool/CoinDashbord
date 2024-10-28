@@ -148,11 +148,6 @@ class PositiveCoinWindow(QWidget):
         """Fetch RSI and StochRSI for coins with potential continuous growth."""
         # Sort potential coins by RSI value (descending order)
         positive_coins.sort(key=lambda x: x[1], reverse=True)
-
-        twilio = libs.twilioConnect.twilioConnect()
-
-        """Fetch RSI and Stochastic RSI for coins with potential continuous growth."""
-        message = "Positive Coins with potential recovery:\n"
             
         i = 0
         binance = libs.binanceConnect.BinanceConnect()
@@ -168,7 +163,3 @@ class PositiveCoinWindow(QWidget):
         potential_coins = self.calculate_potential_coins(positive_coins)
         for coin, rsi, k, d in potential_coins:
             self.coin_list_widget.addItem(f"{coin}: 24h:{temp_change}")
-            
-        if i != 0:   
-            # Send SMS with potential coins
-            twilio.sendSMS(message)
